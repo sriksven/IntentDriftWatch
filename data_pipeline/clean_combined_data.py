@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def clean_combined_topic(topic: str):
     """Load combined data, clean texts, and save to processed/cleaned."""
-    pattern = os.path.join("data/processed/combined", f"{topic.replace(' ', '_')}_combined_*.json")
+    pattern = os.path.join("data_pipeine/data/processed/combined", f"{topic.replace(' ', '_')}_combined_*.json")
     files = sorted(glob(pattern))
     if not files:
         logger.warning(f"No combined data found for {topic}")
@@ -35,8 +35,8 @@ def clean_combined_topic(topic: str):
     data["texts"] = cleaned
     data["num_cleaned_texts"] = len(cleaned)
 
-    ensure_dir("data/processed/cleaned")
-    output_path = os.path.join("data/processed/cleaned", f"{topic.replace(' ', '_')}_cleaned.json")
+    ensure_dir("data_pipeline/data/processed/cleaned")
+    output_path = os.path.join("data_pipeline/data/processed/cleaned", f"{topic.replace(' ', '_')}_cleaned.json")
     save_json(data, output_path)
 
     logger.info(f"✅ Cleaned data for '{topic}' → {output_path}")

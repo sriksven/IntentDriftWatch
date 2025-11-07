@@ -9,7 +9,7 @@ import logging
 import os
 from data_pipeline.utils.io_utils import save_json, ensure_dir
 from data_pipeline.utils.text_cleaning import clean_texts
-from data_pipeline.update_metadata import update_metadata
+from data_pipeline.utils.log_data_collection import log_collection_event
 from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
@@ -23,7 +23,7 @@ client = tweepy.Client(bearer_token=os.getenv("X_BEARER_TOKEN"))
     
 def fetch_twitter_posts(topic: str, limit: int = 100):
     """Fetch up to `limit` recent tweets for a topic."""
-    ensure_dir("data/raw/x")
+    ensure_dir("data_pipeline/data/raw/x")
 
     tweets = []
     try:
@@ -49,9 +49,9 @@ def fetch_twitter_posts(topic: str, limit: int = 100):
     }
 
     filename = f"{topic.replace(' ', '_')}_{dt.datetime.utcnow().strftime('%Y-%m-%d')}.json"
-    path = os.path.join("data/raw/x", filename)
+    path = os.path.join("data_pipeline/data/raw/x", filename)
     save_json(data, path)
-    update_metadata(topic, "x", path)
+    log_collection_event(topic, "x", path)
 
     logger.info(f"✅ Collected {len(cleaned)} tweets for '{topic}' → {path}")
     return path

@@ -20,7 +20,7 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def generate_embeddings_for_topic(topic: str):
     """Generate embeddings from cleaned text for a given topic."""
-    pattern = os.path.join("data/processed/cleaned", f"{topic.replace(' ', '_')}_cleaned.json")
+    pattern = os.path.join("data_pipeline/data/processed/cleaned", f"{topic.replace(' ', '_')}_cleaned.json")
     if not os.path.exists(pattern):
         logger.warning(f"No cleaned data found for {topic}")
         return None
@@ -36,9 +36,9 @@ def generate_embeddings_for_topic(topic: str):
     logger.info(f"🔹 Generating embeddings for '{topic}' ({len(texts)} texts)...")
     embeddings = model.encode(texts, batch_size=32, show_progress_bar=True)
 
-    ensure_dir("data/processed/embeddings")
+    ensure_dir("data_pipeline/data/processed/embeddings")
 
-    npy_path = os.path.join("data/processed/embeddings", f"{topic.replace(' ', '_')}_embeddings.npy")
+    npy_path = os.path.join("data_pipeline/data/processed/embeddings", f"{topic.replace(' ', '_')}_embeddings.npy")
     np.save(npy_path, embeddings)
 
     meta = {
@@ -47,7 +47,7 @@ def generate_embeddings_for_topic(topic: str):
         "num_texts": len(texts),
         "embedding_shape": embeddings.shape
     }
-    meta_path = os.path.join("data/processed/embeddings", f"{topic.replace(' ', '_')}_meta.json")
+    meta_path = os.path.join("data_pipeline/data/processed/embeddings", f"{topic.replace(' ', '_')}_meta.json")
     save_json(meta, meta_path)
 
     logger.info(f"Saved embeddings for '{topic}' → {npy_path}")

@@ -9,7 +9,7 @@ import logging
 import os
 from data_pipeline.utils.io_utils import save_json, ensure_dir
 from data_pipeline.utils.text_cleaning import clean_text
-from data_pipeline.update_metadata import update_metadata
+from data_pipeline.utils.log_data_collection import log_collection_event
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,11 +35,11 @@ def fetch_wiki_page(topic: str):
         "texts": [text]
     }
 
-    ensure_dir("data/raw/wiki")
+    ensure_dir("data_pipeline/data/raw/wiki")
     filename = f"{topic.replace(' ', '_')}_{dt.datetime.utcnow().strftime('%Y-%m-%d')}.json"
-    path = os.path.join("data/raw/wiki", filename)
+    path = os.path.join("data_pipeline/data/raw/wiki", filename)
     save_json(data, path)
-    update_metadata(topic, "wikipedia", path)
+    log_collection_event(topic, "wikipedia", path)
 
     logger.info(f"✅ Saved Wikipedia article for '{topic}' → {path}")
     return path

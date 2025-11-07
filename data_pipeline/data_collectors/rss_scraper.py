@@ -5,14 +5,14 @@ import os
 from urllib.parse import quote_plus
 from data_pipeline.utils.io_utils import save_json, ensure_dir
 from data_pipeline.utils.text_cleaning import clean_texts
-from data_pipeline.update_metadata import update_metadata
+from data_pipeline.utils.log_data_collection import log_collection_event
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def fetch_rss_articles(topic: str, limit: int = 30):
     """Fetch latest Google News RSS articles for a given topic."""
-    ensure_dir("data/raw/news")
+    ensure_dir("data_pipeline/data/raw/news")
 
     encoded_topic = quote_plus(topic)
     url = f"https://news.google.com/rss/search?q={encoded_topic}&hl=en-US&gl=US&ceid=US:en"
@@ -34,9 +34,9 @@ def fetch_rss_articles(topic: str, limit: int = 30):
         }
 
         filename = f"{topic.replace(' ', '_')}_{dt.datetime.utcnow().strftime('%Y-%m-%d')}.json"
-        path = os.path.join("data/raw/news", filename)
+        path = os.path.join("data_pipeline/data/raw/news", filename)
         save_json(data, path)
-        update_metadata(topic, "rss", path)
+        log_collection_event(topic, "rss", path)
 
         logger.info(f"✅ Collected {len(cleaned)} RSS articles for '{topic}' → {path}")
         return path

@@ -1,0 +1,9 @@
+{
+  "topic": "Electric Vehicles",
+  "timestamp": "2025-11-07 14:05:13.280447",
+  "num_texts": 31,
+  "embedding_shape": [
+    31,
+    384
+  ]
+}

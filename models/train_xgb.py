@@ -7,7 +7,7 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from api.utils.embeddings import Embedder
-from models.feature_engineering import preprocess_texts
+from data_pipeline.generate_embeddings import preprocess_texts
 import joblib
 import os, logging
 import numpy as np

@@ -11,16 +11,16 @@ import datetime as dt
 import logging
 from glob import glob
 from data_pipeline.utils.io_utils import save_json, ensure_dir
-from data_pipeline.update_metadata import update_metadata
+from data_pipeline.utils.log_data_collection import log_collection_event
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 RAW_PATHS = {
-    "reddit": "data/raw/reddit",
-    "wiki": "data/raw/wiki",
-    # "x": "data/raw/x",  # temporarily disabled
-    "rss": "data/raw/news"
+    "reddit": "data_pipeline/data/raw/reddit",
+    "wiki": "data_pipeline/data/raw/wiki",
+    # "x": "data_pipeline/data/raw/x",  # temporarily disabled
+    "rss": "data_pipeline/data/raw/news"
 }
 
 def load_texts_from_json(path):
@@ -52,7 +52,7 @@ def combine_topic_data(topic: str):
         logger.warning(f"No data found for topic '{topic}' in any source.")
         return None
 
-    ensure_dir("data/processed/combined")
+    ensure_dir("data_pipeline/data/processed/combined")
     combined_data = {
         "topic": topic,
         "sources": found_sources,
@@ -62,9 +62,9 @@ def combine_topic_data(topic: str):
     }
 
     filename = f"{topic.replace(' ', '_')}_combined_{dt.datetime.utcnow().strftime('%Y-%m-%d')}.json"
-    path = os.path.join("data/processed/combined", filename)
+    path = os.path.join("data_pipeline/data/processed/combined", filename)
     save_json(combined_data, path)
-    update_metadata(topic, "combined", path)
+    log_collection_event(topic, "combined", path)
 
     logger.info(f"✅ Combined data for '{topic}' from {found_sources} → {path}")
     return path

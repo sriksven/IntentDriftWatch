@@ -1,0 +1,9 @@
+{
+  "topic": "Cryptocurrency",
+  "timestamp": "2025-11-07 14:05:13.133209",
+  "num_texts": 131,
+  "embedding_shape": [
+    131,
+    384
+  ]
+}
