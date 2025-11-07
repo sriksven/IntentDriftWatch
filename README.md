@@ -1,203 +1,223 @@
+
 # IntentDriftWatch
-# 🧠 IntentDriftWatch  
-**End-to-End Local MLOps System for Detecting Semantic Drift in Trending Topics**
+**End-to-End Local MLOps System for Detecting Semantic and Concept Drift in Trending Topics**
 
 ---
 
-## 📘 Overview
+## Overview
 
-**IntentDriftWatch** is a fully local, production-style **MLOps project** that tracks how the *meaning and intent* of trending topics change over time.  
-It ingests data from **Reddit**, **X (Twitter)**, and **Wikipedia**, computes semantic embeddings, detects drift, and automatically retrains models when intent shifts.
-
-> Think of it as a miniature simulation of Google’s internal “query understanding freshness” pipeline — but built locally with open-source tools.
+IntentDriftWatch is a fully local, production-grade MLOps system that monitors both **semantic drift** (how topic meaning changes over time) and **concept drift** (how model performance degrades due to that change). The system continuously collects multi-source data, computes embeddings, detects drift, and triggers retraining workflows.
 
 ---
 
-## 🎯 Features
+## Objectives
 
-| Capability | Description |
-|-------------|--------------|
-| **Fully Local** | All components (Airflow, MLflow, FastAPI, ELK, MailHog) run via Docker on localhost |
-| **Automated Orchestration** | Airflow DAGs manage data collection, embedding, drift detection, training, and alerts |
-| **ML Models** | Uses `SentenceTransformer` for embeddings and `XGBoost` for intent classification |
-| **CI / CT / CD** | GitHub Actions workflows for linting, testing, continuous training & deployment |
-| **Monitoring Stack** | MLflow (model tracking), Evidently (drift reports), ELK (logs), MailHog (emails) |
-| **Feedback Loop** | FastAPI `/feedback` endpoint stores user corrections for retraining |
-| **Explainability** | Drift visualized via HTML reports & Kibana dashboards |
+1. Identify changes in the meaning of topics over time using unsupervised embeddings.
+2. Quantify the effect of semantic drift on model accuracy (concept drift).
+3. Automate the full workflow of collection, processing, embedding, drift analysis, and retraining.
+4. Provide UI dashboards for both drift types using FastAPI and React.
 
 ---
 
-## 🧩 Architecture
+## Core Components
 
-X Trends + Reddit + Wikipedia
-│
-▼
-┌────────────────────┐
-│ Airflow DAGs │
-│ ├─ collect topics │
-│ ├─ collect data │
-│ ├─ embed + drift │
-│ ├─ train XGBoost │
-│ ├─ report + alert │
-└────────────────────┘
-│
-▼
-SentenceTransformer (embeddings)
-│
-▼
-XGBoost Classifier → MLflow Tracking
-│
-▼
-Evidently Drift Reports + ELK Dashboards
-│
-▼
-FastAPI Endpoints + Frontend Visualization
-
+| Component | Description |
+|------------|-------------|
+| **Semantic Drift** | Unsupervised detection of meaning change between embeddings across time windows. |
+| **Concept Drift** | Supervised detection of model performance degradation using XGBoost trained on topic embeddings. |
+| **Data Collectors** | Fetches real-world data from Reddit, Wikipedia, RSS feeds, and X. |
+| **Drift Analytics** | Computes cosine, JSD, and accuracy decay metrics for interpretation. |
+| **Pipelines** | Orchestrates the end-to-end execution using modular scripts. |
 
 ---
 
-## 🧮 Models Used
-
-| Component | Model | Purpose |
-|------------|--------|----------|
-| **Embedding Encoder** | `sentence-transformers/all-MiniLM-L6-v2` | Converts text into 384-dim semantic vectors |
-| **Classifier** | `XGBoost` | Predicts or clusters topic intents |
-| **Drift Metric** | Cosine Distance / JSD | Detects semantic change over time |
-
-All models run **offline on CPU**.
-
----
-
-## 🧱 Local Stack
-
-| Service | Tool | Purpose |
-|----------|------|----------|
-| **Workflow Orchestration** | Apache Airflow | Schedule & execute DAGs |
-| **Experiment Tracking** | MLflow | Track drift metrics, models, parameters |
-| **Model Serving** | FastAPI | Serve predictions & drift status |
-| **Monitoring** | Evidently AI | Generate HTML drift reports |
-| **Logging** | ELK Stack (Elastic + Logstash + Kibana) | Log visualization |
-| **Email Alerts** | MailHog | Local SMTP notifications |
-| **Frontend** | React + Vite | Dashboard for topics, drift, reports |
-| **CI / CD** | GitHub Actions | Automated build, test, retrain |
-
----
-
-## ⚙️ Setup & Run (Local)
-
-### 1️⃣ Clone & Install
-```bash
-git clone https://github.com/<your-username>/IntentDriftWatch.git
-cd IntentDriftWatch
-
-
-2️⃣ Install dependencies
-pip install -r requirements.txt
-
-3️⃣ Run Docker Compose
-docker compose up -d --build
-
-4️⃣ Open Local Services
-| Service            | URL                                                      |
-| ------------------ | -------------------------------------------------------- |
-| Airflow UI         | [http://localhost:8080](http://localhost:8080)           |
-| MLflow UI          | [http://localhost:5000](http://localhost:5000)           |
-| Kibana             | [http://localhost:5601](http://localhost:5601)           |
-| MailHog (emails)   | [http://localhost:8025](http://localhost:8025)           |
-| FastAPI docs       | [http://localhost:8000/docs](http://localhost:8000/docs) |
-| Frontend dashboard | [http://localhost:5173](http://localhost:5173)           |
-
-
-🧩 Example Outputs
-| Output Type                  | Example                                                                 |
-| ---------------------------- | ----------------------------------------------------------------------- |
-| **Drift Report (Evidently)** | `monitoring/reports/tesla_drift_2025-10-05.html`                        |
-| **MLflow Log**               | `accuracy=0.86`, `drift_score=0.21`                                     |
-| **Alert Email (MailHog)**    | “⚠️ Intent Drift Detected for Tesla (0.26)”                             |
-| **API Output**               | `{ "topic": "Tesla", "drift_score": 0.26, "status": "Drift Detected" }` |
-
-🔁 CI / CT / CD Workflows
-| Workflow                       | Trigger               | Action                                  |
-| ------------------------------ | --------------------- | --------------------------------------- |
-| **CI**                         | On push               | Lint, test DAGs & API                   |
-| **CT (Continuous Training)**   | Weekly or drift alert | Retrain XGBoost                         |
-| **CD (Continuous Deployment)** | After new model       | Build + restart local FastAPI container |
+## Architecture Overview
 
 ```
-Project structure(For now)
+               ┌───────────────────────────┐
+               │      Data Collectors      │
+               │ Reddit | Wiki | RSS | X   │
+               └───────────────────────────┘
+                          │
+                          ▼
+               ┌───────────────────────────┐
+               │     Combine + Clean       │
+               │ Text normalization + merge│
+               └───────────────────────────┘
+                          │
+                          ▼
+               ┌───────────────────────────┐
+               │  Embedding Generation     │
+               │ SentenceTransformer (MiniLM)│
+               └───────────────────────────┘
+                          │
+               ┌────────────┴────────────┐
+               ▼                         ▼
+   ┌────────────────────┐     ┌─────────────────────┐
+   │  Semantic Drift     │     │  Concept Drift      │
+   │  (Cosine, JSD)      │     │  (Accuracy decay)   │
+   └────────────────────┘     └─────────────────────┘
+                          │
+                          ▼
+               ┌───────────────────────────┐
+               │ Visualization & Alerts    │
+               │ React Dashboard | Kibana  │
+               └───────────────────────────┘
+```
 
+---
 
-```bash
+## Semantic Drift Visualization (Unsupervised)
+
+- Measures change in topic embeddings across time snapshots.
+- Uses **Cosine Distance** and **Jensen–Shannon Divergence** to capture both direction and distributional drift.
+- Output: JSON reports in `/drift_reports/`.
+
+### Example Visualization (to be shown in React Dashboard)
+
+| Topic | Cosine Drift | JSD Drift | Drift Score | Status |
+|--------|---------------|------------|--------------|---------|
+| Artificial Intelligence | 0.22 | 0.18 | 0.20 | Stable |
+| Cryptocurrency | 0.47 | 0.44 | 0.46 | Drift Detected |
+
+---
+
+## Concept Drift Visualization (Supervised)
+
+- Trains **XGBoost** on embeddings as a baseline classifier.
+- Tests the same model on newer embeddings to track performance decay.
+- Accuracy decline over time indicates concept drift.
+
+### Example Visualization
+
+| Date | Mean Semantic Drift | Model Accuracy | Status |
+|------|----------------------|----------------|---------|
+| 2025-11-06 | 0.12 | 0.88 | Stable |
+| 2025-11-07 | 0.27 | 0.75 | Minor Drift |
+| 2025-11-08 | 0.42 | 0.63 | Drift Detected |
+
+---
+
+## Data Flow Summary
+
+| Stage | Input | Output | Module |
+|--------|--------|----------|---------|
+| Data Collection | Reddit/Wiki/RSS | Raw JSON | `data_pipeline/data_collectors/*` |
+| Combining | Raw JSONs | Merged topic data | `combine_sources.py` |
+| Cleaning | Merged data | Normalized text | `clean_combined_data.py` |
+| Embedding | Cleaned text | Vector representations (.npy) | `generate_embeddings.py` |
+| Semantic Drift | Embedding pairs | Drift scores | `analytics/drift_utils.py` |
+| Concept Drift | Embeddings + labels | Accuracy metrics | `models/train_xgb.py` |
+
+---
+
+## Updated Project Structure
+
+```
 IntentDriftWatch/
-├── README.md
-├── docker-compose.yml
-├── requirements.txt
-│
-├── airflow/
-│   ├── dags/
-│   │   ├── collect_trending_topics.py
-│   │   ├── collect_multisource_data.py
-│   │   ├── embed_and_detect_drift.py
-│   │   ├── train_xgboost_classifier.py
-│   │   ├── generate_drift_report.py
-│   │   ├── log_and_alert.py
-│   │   └── retrain_pipeline.py
-│   ├── Dockerfile
-│   └── airflow.cfg
+├── analytics/
+│   └── drift_utils.py
 │
 ├── api/
-│   ├── app.py
 │   ├── model_store/
-│   │   ├── xgboost_model.json
-│   │   └── label_encoder.pkl
 │   └── utils/
 │       └── embeddings.py
 │
-├── frontend/
-│   ├── index.html
-│   ├── vite.config.js
-│   ├── package.json
-│   └── src/
-│       ├── App.jsx
-│       └── components/
-│           └── DriftDashboard.jsx
+├── data_pipeline/
+│   ├── data/
+│   │   ├── raw/
+│   │   │   ├── reddit/
+│   │   │   ├── wiki/
+│   │   │   ├── news/
+│   │   │   └── x/
+│   │   └── processed/
+│   │       ├── cleaned/
+│   │       ├── combined/
+│   │       └── embeddings/
+│   ├── data_collectors/
+│   ├── utils/
+│   ├── clean_combined_data.py
+│   ├── combine_sources.py
+│   └── generate_embeddings.py
+│
+├── drift_reports/
 │
 ├── models/
-│   ├── train_xgb.py
-│   ├── drift_utils.py
-│   └── feature_engineering.py
-│
-├── data/
-│   ├── metadata/
-│   │   └── topics_2025-10-05.json
-│   ├── raw/
-│   │   ├── reddit/
-│   │   ├── wiki/
-│   │   └── x/
-│   ├── processed/
-│   │   └── embeddings/
-│   └── drift_reports/
-│
-├── mlflow/
-│   └── mlruns/
-│
-├── monitoring/
-│   ├── logstash.conf
-│   ├── filebeat.yml
-│   └── kibana_dashboards/
-│       └── drift_dashboard.json
+│   └── train_xgb.py
 │
 ├── logging/
-│   ├── logs/
-│   └── alerts/
+│   ├── alerts/
+│   └── logs/
 │
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       ├── ct.yml
-│       └── cd.yml
+├── monitoring/
 │
-└── notebooks/
-    └── exploration.ipynb
+├── pipelines/
+│   └── full_pipeline.py
+│
+├── notebooks/
+│   └── exploration.ipynb
+│
+├── requirements.txt
+├── .env
+└── README.md
 ```
 
+---
+
+## Usage
+
+### Step 1: Setup
+
+```bash
+pip install -r requirements.txt
+touch .env
+# Add Reddit API keys and credentials
+```
+
+### Step 2: Run Full Pipeline
+
+```bash
+python -m pipelines.full_pipeline
+```
+
+### Step 3: Run Only Drift Analysis
+
+```bash
+python -m analytics.drift_utils
+```
+
+### Step 4: Train or Evaluate XGBoost Classifier
+
+```bash
+python -m models.train_xgb
+```
+
+---
+
+## Dashboard Plans
+
+### Semantic Drift Dashboard
+- Displays drift scores per topic per date.
+- Line graph of cosine drift over time.
+- Color-coded status (green=stable, red=drifted).
+
+### Concept Drift Dashboard
+- Shows model accuracy trend.
+- Plots semantic drift vs model accuracy correlation.
+- Displays alerts when accuracy drops beyond threshold.
+
+---
+
+## Future Extensions
+
+- Integrate Airflow for DAG-based orchestration.
+- Enable retraining trigger when drift exceeds threshold.
+- Push reports to MLflow and Evidently.
+- Deploy a FastAPI service exposing drift summaries.
+- Create React/Vite dashboard for both drift types.
+
+---
+
+## Summary
+
+IntentDriftWatch now combines both unsupervised (semantic) and supervised (concept) drift detection in a unified, modular, and locally executable MLOps environment. The project offers a complete simulation of real-world data evolution monitoring and model retraining pipelines used in modern search and recommendation systems.

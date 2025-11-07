@@ -1,0 +1,10 @@
+{
+  "topic": "Elections",
+  "timestamp": "2025-11-07 14:40:55.064434",
+  "cosine_drift": 0.0,
+  "jsd_drift": 0.0,
+  "drift_score": 0.0,
+  "old_snapshot": "Elections_embeddings.npy",
+  "new_snapshot": "Elections_embeddings_2025-11-07.npy",
+  "status": "Stable"
+}

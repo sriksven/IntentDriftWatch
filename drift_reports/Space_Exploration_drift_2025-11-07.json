@@ -1,0 +1,10 @@
+{
+  "topic": "Space Exploration",
+  "timestamp": "2025-11-07 14:40:55.059740",
+  "cosine_drift": 1.72498796358056e-08,
+  "jsd_drift": 0.0,
+  "drift_score": 0.0,
+  "old_snapshot": "Space_Exploration_embeddings.npy",
+  "new_snapshot": "Space_Exploration_embeddings_2025-11-07.npy",
+  "status": "Stable"
+}

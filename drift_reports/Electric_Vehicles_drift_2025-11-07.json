@@ -1,0 +1,10 @@
+{
+  "topic": "Electric Vehicles",
+  "timestamp": "2025-11-07 14:40:55.062903",
+  "cosine_drift": 0.0,
+  "jsd_drift": 0.0,
+  "drift_score": 0.0,
+  "old_snapshot": "Electric_Vehicles_embeddings.npy",
+  "new_snapshot": "Electric_Vehicles_embeddings_2025-11-07.npy",
+  "status": "Stable"
+}

@@ -4,7 +4,6 @@ Purpose: Detect semantic drift automatically across all topics.
 """
 
 import os
-import json
 import numpy as np
 import datetime as dt
 import logging
@@ -66,18 +65,17 @@ def compute_drift(topic: str, old_path: str, new_path: str):
 def run_all_drifts(emb_dir="data_pipeline/data/processed/embeddings"):
     """Detect drift for all topics with at least two embedding snapshots."""
     logger.info("📈 Running automatic drift detection for all topics...")
+
     if not os.path.exists(emb_dir):
         logger.error(f"Embedding directory not found: {emb_dir}")
         return
 
-    # Map: topic -> list of its embedding files
     topic_files = {}
     for f in os.listdir(emb_dir):
         if f.endswith(".npy"):
             topic = f.split("_embeddings")[0].replace("_", " ")
             topic_files.setdefault(topic, []).append(f)
 
-    # Compute drift for all topics
     for topic, files in topic_files.items():
         files = sorted(files)
         if len(files) < 2:
