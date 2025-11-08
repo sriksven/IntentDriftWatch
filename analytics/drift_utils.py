@@ -1,6 +1,6 @@
 """
 Module: drift_utils.py
-Purpose: Detect semantic drift automatically across all topics.
+Purpose: Detect semantic drift automatically across all available embedding snapshots.
 """
 
 import os
@@ -26,7 +26,7 @@ def jensen_shannon_divergence(p, q):
 
 
 # ---------- Core Drift ----------
-def compute_drift(topic: str, old_path: str, new_path: str):
+def compute_drift(topic: str, old_path: str, new_path: str, old_date: str, new_date: str):
     """Compute semantic drift metrics between two embedding snapshots."""
     old_emb = np.load(old_path)
     new_emb = np.load(new_path)
@@ -41,18 +41,20 @@ def compute_drift(topic: str, old_path: str, new_path: str):
     result = {
         "topic": topic,
         "timestamp": str(dt.datetime.utcnow()),
+        "old_date": old_date,
+        "new_date": new_date,
         "cosine_drift": float(cosine_drift),
         "jsd_drift": float(jsd),
         "drift_score": float(drift_score),
-        "old_snapshot": os.path.basename(old_path),
-        "new_snapshot": os.path.basename(new_path),
+        "old_snapshot": old_path,
+        "new_snapshot": new_path,
         "status": "Drift Detected" if drift_score > 0.25 else "Stable"
     }
 
     ensure_dir("drift_reports")
     report_path = os.path.join(
         "drift_reports",
-        f"{topic.replace(' ', '_')}_drift_{dt.datetime.utcnow().strftime('%Y-%m-%d')}.json"
+        f"{topic.replace(' ', '_')}_drift_{new_date}.json"
     )
     save_json(result, report_path)
 
@@ -62,32 +64,57 @@ def compute_drift(topic: str, old_path: str, new_path: str):
 
 
 # ---------- Automatic Runner ----------
-def run_all_drifts(emb_dir="data_pipeline/data/processed/embeddings"):
-    """Detect drift for all topics with at least two embedding snapshots."""
-    logger.info("📈 Running automatic drift detection for all topics...")
+def run_all_drifts(base_emb_dir="data_pipeline/data/processed/embeddings"):
+    """
+    Detect drift for all topics across all consecutive embedding snapshots.
+    Example:
+        2025-11-05 → 2025-11-06
+        2025-11-06 → 2025-11-07
+        etc.
+    """
+    logger.info("📈 Running full multi-date drift detection...")
 
-    if not os.path.exists(emb_dir):
-        logger.error(f"Embedding directory not found: {emb_dir}")
+    if not os.path.exists(base_emb_dir):
+        logger.error(f"Embedding directory not found: {base_emb_dir}")
         return
 
-    topic_files = {}
-    for f in os.listdir(emb_dir):
-        if f.endswith(".npy"):
-            topic = f.split("_embeddings")[0].replace("_", " ")
-            topic_files.setdefault(topic, []).append(f)
+    # Get all date folders
+    date_dirs = sorted(
+        [d for d in os.listdir(base_emb_dir) if os.path.isdir(os.path.join(base_emb_dir, d))]
+    )
+    if len(date_dirs) < 2:
+        logger.warning("Not enough embedding snapshots to compute drift (need at least 2 dates).")
+        return
 
-    for topic, files in topic_files.items():
-        files = sorted(files)
-        if len(files) < 2:
-            logger.warning(f"Skipping '{topic}' (only one embedding snapshot).")
+    # Iterate through all consecutive pairs
+    for i in range(1, len(date_dirs)):
+        old_date, new_date = date_dirs[i - 1], date_dirs[i]
+        old_dir = os.path.join(base_emb_dir, old_date)
+        new_dir = os.path.join(base_emb_dir, new_date)
+
+        logger.info(f"🔹 Comparing embeddings: {old_date} → {new_date}")
+
+        old_files = {
+            os.path.splitext(f)[0]: os.path.join(old_dir, f)
+            for f in os.listdir(old_dir)
+            if f.endswith(".npy")
+        }
+        new_files = {
+            os.path.splitext(f)[0]: os.path.join(new_dir, f)
+            for f in os.listdir(new_dir)
+            if f.endswith(".npy")
+        }
+
+        common_topics = set(old_files.keys()) & set(new_files.keys())
+        if not common_topics:
+            logger.warning(f"No common topics found between {old_date} and {new_date}.")
             continue
 
-        old_path = os.path.join(emb_dir, files[-2])
-        new_path = os.path.join(emb_dir, files[-1])
-        logger.info(f"🔹 Computing drift for {topic} between {files[-2]} → {files[-1]}")
-        compute_drift(topic, old_path, new_path)
+        for topic_file in common_topics:
+            topic_name = topic_file.replace("_", " ")
+            compute_drift(topic_name, old_files[topic_file], new_files[topic_file], old_date, new_date)
 
-    logger.info("✅ All drift computations completed.")
+    logger.info("✅ Multi-date drift detection completed successfully.")
 
 
 if __name__ == "__main__":

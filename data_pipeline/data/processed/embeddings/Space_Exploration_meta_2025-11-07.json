@@ -1,9 +1,0 @@
-{
-  "topic": "Space Exploration",
-  "timestamp": "2025-11-07 14:42:36.865788",
-  "num_texts": 31,
-  "embedding_shape": [
-    31,
-    384
-  ]
-}

@@ -23,6 +23,7 @@ RAW_PATHS = {
     "rss": "data_pipeline/data/raw/news"
 }
 
+
 def load_texts_from_json(path):
     try:
         with open(path, "r") as f:
@@ -32,8 +33,9 @@ def load_texts_from_json(path):
         logger.error(f"Failed to read {path}: {e}")
         return []
 
+
 def combine_topic_data(topic: str):
-    """Merge all available source files for a topic into one combined dataset."""
+    """Merge all available source files for a topic into one combined dataset (overwrite mode)."""
     combined_texts = []
     found_sources = []
 
@@ -42,7 +44,8 @@ def combine_topic_data(topic: str):
         files = glob(pattern)
         if not files:
             continue
-        latest_file = sorted(files)[-1]  # pick the latest by date
+
+        latest_file = sorted(files)[-1]  # pick the latest file by date
         texts = load_texts_from_json(latest_file)
         if texts:
             combined_texts.extend(texts)
@@ -61,8 +64,10 @@ def combine_topic_data(topic: str):
         "texts": combined_texts
     }
 
-    filename = f"{topic.replace(' ', '_')}_combined_{dt.datetime.utcnow().strftime('%Y-%m-%d')}.json"
+    # overwrite each run → no date suffix
+    filename = f"{topic.replace(' ', '_')}_combined.json"
     path = os.path.join("data_pipeline/data/processed/combined", filename)
+
     save_json(combined_data, path)
     log_collection_event(topic, "combined", path)
 

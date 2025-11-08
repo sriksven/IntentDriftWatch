@@ -1,0 +1,10 @@
+{
+  "topic": "Climate Change",
+  "source_cleaned_file": "Climate_Change_cleaned_2025-11-08.json",
+  "timestamp": "2025-11-08 12:58:15.127280",
+  "num_texts": 131,
+  "embedding_shape": [
+    131,
+    384
+  ]
+}

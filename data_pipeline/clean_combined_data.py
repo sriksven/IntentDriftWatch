@@ -6,6 +6,7 @@ Purpose: Clean and normalize combined topic data before embedding.
 import os
 import json
 import logging
+import datetime as dt
 from glob import glob
 from data_pipeline.utils.io_utils import ensure_dir, save_json
 from data_pipeline.utils.text_cleaning import clean_texts
@@ -14,8 +15,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def clean_combined_topic(topic: str):
-    """Load combined data, clean texts, and save to processed/cleaned."""
-    pattern = os.path.join("data_pipeine/data/processed/combined", f"{topic.replace(' ', '_')}_combined_*.json")
+    """Load latest combined data, clean texts, and save a date-versioned cleaned file."""
+    # find the latest combined file (non-dated, always overwritten)
+    pattern = os.path.join("data_pipeline/data/processed/combined", f"{topic.replace(' ', '_')}_combined*.json")
     files = sorted(glob(pattern))
     if not files:
         logger.warning(f"No combined data found for {topic}")
@@ -32,13 +34,22 @@ def clean_combined_topic(topic: str):
 
     cleaned = clean_texts(texts)
 
+    # update fields
     data["texts"] = cleaned
     data["num_cleaned_texts"] = len(cleaned)
+    data["cleaned_at"] = str(dt.datetime.utcnow())
 
+    # make sure output dir exists
     ensure_dir("data_pipeline/data/processed/cleaned")
-    output_path = os.path.join("data_pipeline/data/processed/cleaned", f"{topic.replace(' ', '_')}_cleaned.json")
-    save_json(data, output_path)
 
+    # save cleaned file with date suffix
+    today = dt.datetime.utcnow().strftime("%Y-%m-%d")
+    output_path = os.path.join(
+        "data_pipeline/data/processed/cleaned",
+        f"{topic.replace(' ', '_')}_cleaned_{today}.json"
+    )
+
+    save_json(data, output_path)
     logger.info(f"✅ Cleaned data for '{topic}' → {output_path}")
     return output_path
 
@@ -55,3 +66,4 @@ if __name__ == "__main__":
 
     for t in topics:
         clean_combined_topic(t)
+

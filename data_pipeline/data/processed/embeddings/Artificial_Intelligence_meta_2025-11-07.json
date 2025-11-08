@@ -1,9 +1,0 @@
-{
-  "topic": "Artificial Intelligence",
-  "timestamp": "2025-11-07 14:42:36.547186",
-  "num_texts": 31,
-  "embedding_shape": [
-    31,
-    384
-  ]
-}

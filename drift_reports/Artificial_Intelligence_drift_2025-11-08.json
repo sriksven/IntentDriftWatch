@@ -1,0 +1,10 @@
+{
+  "topic": "Artificial Intelligence",
+  "timestamp": "2025-11-08 11:42:38.118628",
+  "cosine_drift": 0.0,
+  "jsd_drift": 0.0,
+  "drift_score": 0.0,
+  "old_snapshot": "Artificial_Intelligence_embeddings_2025-11-07.npy",
+  "new_snapshot": "Artificial_Intelligence_embeddings_2025-11-08.npy",
+  "status": "Stable"
+}
