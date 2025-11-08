@@ -4,7 +4,6 @@ Purpose: Run the complete IntentDriftWatch workflow end-to-end.
 Author: Sriks
 """
 
-import os
 import time
 import logging
 
@@ -15,7 +14,8 @@ from data_pipeline.data_collectors.rss_scraper import fetch_rss_articles
 from data_pipeline.combine_sources import combine_topic_data
 from data_pipeline.clean_combined_data import clean_combined_topic
 from data_pipeline.generate_embeddings import generate_embeddings_for_topic
-from analytics.drift_utils import compute_drift
+from analytics.semantic_drift import run_semantic_drift
+from models.concept_drift_xgb import run_concept_drift
 from data_pipeline.utils.log_data_collection import log_collection_event
 
 # ---- Logging setup ----
@@ -35,7 +35,9 @@ TOPICS = [
 def run_full_pipeline():
     logger.info("🚀 Starting IntentDriftWatch full pipeline...")
 
+    # ==============================
     # PHASE 1: DATA COLLECTION
+    # ==============================
     logger.info("📥 Phase 1: Collecting data from Reddit, Wikipedia, and RSS")
 
     for topic in TOPICS:
@@ -49,7 +51,9 @@ def run_full_pipeline():
             log_collection_event(topic, "data_collection", f"failed: {e}")
             logger.error(f"❌ Failed to collect data for {topic}: {e}")
 
+    # ==============================
     # PHASE 2: DATA PREPARATION
+    # ==============================
     logger.info("🧹 Phase 2: Combining and cleaning data")
 
     for topic in TOPICS:
@@ -59,7 +63,9 @@ def run_full_pipeline():
         except Exception as e:
             logger.error(f"❌ Failed during processing for {topic}: {e}")
 
+    # ==============================
     # PHASE 3: EMBEDDING GENERATION
+    # ==============================
     logger.info("🧠 Phase 3: Generating embeddings")
 
     for topic in TOPICS:
@@ -68,25 +74,23 @@ def run_full_pipeline():
         except Exception as e:
             logger.error(f"❌ Embedding failed for {topic}: {e}")
 
-    # PHASE 4: DRIFT DETECTION
-    logger.info("📈 Phase 4: Computing semantic drift")
+    # ==============================
+    # PHASE 4: SEMANTIC DRIFT
+    # ==============================
+    logger.info("📈 Phase 4: Detecting semantic drift")
+    try:
+        run_semantic_drift("data_pipeline/data/processed/embeddings")
+    except Exception as e:
+        logger.error(f"❌ Semantic drift computation failed: {e}")
 
-    for topic in TOPICS:
-        try:
-            # Assuming you compare last two snapshots automatically
-            emb_dir = "data_pipeline/data/processed/embeddings"
-            all_embeds = sorted(
-                [f for f in os.listdir(emb_dir) if topic.replace(' ', '_') in f and f.endswith('.npy')]
-            )
-
-            if len(all_embeds) >= 2:
-                old_path = os.path.join(emb_dir, all_embeds[-2])
-                new_path = os.path.join(emb_dir, all_embeds[-1])
-                compute_drift(topic, old_path, new_path)
-            else:
-                logger.warning(f"Not enough snapshots for drift detection: {topic}")
-        except Exception as e:
-            logger.error(f"❌ Drift computation failed for {topic}: {e}")
+    # ==============================
+    # PHASE 5: CONCEPT DRIFT
+    # ==============================
+    logger.info("📊 Phase 5: Detecting concept drift")
+    try:
+        run_concept_drift("data_pipeline/data/processed/embeddings")
+    except Exception as e:
+        logger.error(f"❌ Concept drift computation failed: {e}")
 
     logger.info("✅ Pipeline complete! All phases executed successfully.")
 

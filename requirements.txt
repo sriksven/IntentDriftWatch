@@ -7,7 +7,6 @@ pandas==2.2.3
 numpy
 scipy
 
-
 # Utility & Logging
 joblib==1.4.2
 matplotlib==3.9.2
@@ -18,10 +17,14 @@ python-dotenv
 jupyter==1.1.1
 ipykernel==6.29.5
 
-#data collection
+# data collection
 psaw
 wikipedia-api
 praw
 snscrape
 tweepy
 feedparser
+
+# MLOps & Drift Visualization
+mlflow
+evidently

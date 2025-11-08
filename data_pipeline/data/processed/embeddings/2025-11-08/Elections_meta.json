@@ -1,10 +1,10 @@
 {
   "topic": "Elections",
   "source_cleaned_file": "Elections_cleaned_2025-11-08.json",
-  "timestamp": "2025-11-08 12:58:16.840582",
-  "num_texts": 130,
+  "timestamp": "2025-11-08 15:59:51.253160",
+  "num_texts": 131,
   "embedding_shape": [
-    130,
+    131,
     384
   ]
 }
