@@ -1,0 +1,12 @@
+{
+  "topic": "Climate Change",
+  "timestamp": "2025-11-09 14:19:23.720562",
+  "old_date": "2025-11-08",
+  "new_date": "2025-11-09",
+  "train_acc": 0.9618320610687023,
+  "test_acc": 0.48854961832061067,
+  "train_f1": 0.9635036496350365,
+  "test_f1": 0.5179856115107914,
+  "accuracy_drop": 0.4733,
+  "status": "Concept Drift Detected"
+}

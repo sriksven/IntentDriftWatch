@@ -1,0 +1,10 @@
+{
+  "topic": "Cryptocurrency",
+  "source_cleaned_file": "Cryptocurrency_cleaned_2025-11-09.json",
+  "timestamp": "2025-11-09 14:19:22.572804",
+  "num_texts": 131,
+  "embedding_shape": [
+    131,
+    384
+  ]
+}

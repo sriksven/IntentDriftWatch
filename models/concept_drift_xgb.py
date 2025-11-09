@@ -26,13 +26,33 @@ def compute_concept_drift(topic, old_emb_path, new_emb_path, old_date, new_date)
     X_train, y_train = load_embeddings(old_emb_path)
     X_test, y_test = load_embeddings(new_emb_path)
 
-    model = xgb.XGBClassifier(max_depth=3, n_estimators=50, learning_rate=0.1, use_label_encoder=False)
-    model.fit(X_train, y_train, eval_metric="logloss")
+    # Align sample sizes between snapshots (safety fix)
+    n = min(len(X_train), len(X_test))
+    if n == 0:
+        logger.warning(f"No overlapping samples to compare for topic: {topic}")
+        return None
 
-    acc_train = accuracy_score(y_train, model.predict(X_train))
-    acc_test = accuracy_score(y_test, model.predict(X_test))
-    f1_train = f1_score(y_train, model.predict(X_train))
-    f1_test = f1_score(y_test, model.predict(X_test))
+    X_train, y_train = X_train[:n], y_train[:n]
+    X_test, y_test = X_test[:n], y_test[:n]
+
+    # XGBoost setup (new API — eval_metric inside constructor)
+    model = xgb.XGBClassifier(
+        max_depth=3,
+        n_estimators=50,
+        learning_rate=0.1,
+        use_label_encoder=False,
+        eval_metric="logloss"  # ✅ moved here
+    )
+
+    model.fit(X_train, y_train)
+
+    y_pred_train = model.predict(X_train)
+    y_pred_test = model.predict(X_test)
+
+    acc_train = accuracy_score(y_train, y_pred_train)
+    acc_test = accuracy_score(y_test, y_pred_test)
+    f1_train = f1_score(y_train, y_pred_train)
+    f1_test = f1_score(y_test, y_pred_test)
 
     accuracy_drop = round(acc_train - acc_test, 4)
 
@@ -54,6 +74,7 @@ def compute_concept_drift(topic, old_emb_path, new_emb_path, old_date, new_date)
     save_json(result, path)
 
     logger.info(f"✅ Concept drift for '{topic}' saved → {path}")
+    logger.info(f"   Accuracy Drop: {accuracy_drop:.4f} | Status: {result['status']}")
     return result
 
 

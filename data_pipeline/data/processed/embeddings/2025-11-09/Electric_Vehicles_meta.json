@@ -1,0 +1,10 @@
+{
+  "topic": "Electric Vehicles",
+  "source_cleaned_file": "Electric_Vehicles_cleaned_2025-11-09.json",
+  "timestamp": "2025-11-09 14:19:23.054462",
+  "num_texts": 131,
+  "embedding_shape": [
+    131,
+    384
+  ]
+}

@@ -29,6 +29,14 @@ def compute_semantic_drift(topic: str, old_path: str, new_path: str, old_date: s
     old_emb = np.load(old_path)
     new_emb = np.load(new_path)
 
+    # Ensure both have same length (important if different number of samples per day)
+    n = min(len(old_emb), len(new_emb))
+    if n == 0:
+        logger.warning(f"No overlapping samples to compare for topic: {topic}")
+        return None
+
+    old_emb, new_emb = old_emb[:n], new_emb[:n]
+
     old_mean = np.mean(old_emb, axis=0)
     new_mean = np.mean(new_emb, axis=0)
 
