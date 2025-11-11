@@ -1,13 +1,26 @@
 """
 Aggregate semantic and concept drift JSONs into a single daily summary.
+
+Inputs:
+- drift_reports/semantic/*.json
+- drift_reports/concept/*.json
+
 Outputs:
-- monitoring/drift_summary_<date>.json
-- monitoring/drift_summary_<date>.csv
+- drift_reports/summaries/drift_summary_<date>.json
+- drift_reports/summaries/drift_summary_<date>.csv
 """
 
-import os, json, csv, datetime as dt
+import os
+import json
+import csv
+import datetime as dt
 from glob import glob
 from pathlib import Path
+import subprocess, sys
+
+BASE_DIR = "/Users/sriks/Documents/Projects/IntentDriftWatch"
+DRIFT_DIR = os.path.join(BASE_DIR, "drift_reports")
+SUMMARY_DIR = os.path.join(DRIFT_DIR, "summaries")
 
 def load_jsons(pattern):
     out = []
@@ -20,11 +33,11 @@ def load_jsons(pattern):
     return out
 
 def main():
-    Path("monitoring").mkdir(exist_ok=True)
+    Path(SUMMARY_DIR).mkdir(parents=True, exist_ok=True)
     today = dt.datetime.utcnow().strftime("%Y-%m-%d")
 
-    semantic = load_jsons("drift_reports/semantic/*.json")
-    concept = load_jsons("drift_reports/concept/*.json")
+    semantic = load_jsons(os.path.join(DRIFT_DIR, "semantic", "*.json"))
+    concept = load_jsons(os.path.join(DRIFT_DIR, "concept", "*.json"))
 
     # Index by (topic, new_date)
     sem_idx = {(s["topic"], s["new_date"]): s for s in semantic if "topic" in s}
@@ -41,31 +54,37 @@ def main():
         row = {
             "topic": t,
             "date": latest_date,
-            "semantic_status": s["status"] if s else "N/A",
-            "semantic_score": s["drift_score"] if s else None,
-            "cosine_drift": s["cosine_drift"] if s else None,
-            "jsd_drift": s["jsd_drift"] if s else None,
-            "concept_status": c["status"] if c else "N/A",
-            "test_acc": c["test_acc"] if c else None,
-            "test_f1": c["test_f1"] if c else None,
-            "accuracy_drop": c["accuracy_drop"] if c else None,
+            "semantic_status": s.get("status") if s else "N/A",
+            "semantic_score": s.get("drift_score") if s else None,
+            "cosine_drift": s.get("cosine_drift") if s else None,
+            "jsd_drift": s.get("jsd_drift") if s else None,
+            "concept_status": c.get("status") if c else "N/A",
+            "test_acc": c.get("test_acc") if c else None,
+            "test_f1": c.get("test_f1") if c else None,
+            "accuracy_drop": c.get("accuracy_drop") if c else None,
         }
         rows.append(row)
 
     # Write JSON
-    jpath = f"monitoring/drift_summaries/drift_summary_{latest_date}.json"
+    jpath = os.path.join(SUMMARY_DIR, f"drift_summary_{latest_date}.json")
     with open(jpath, "w") as f:
         json.dump({"generated_at": today, "date": latest_date, "rows": rows}, f, indent=2)
 
     # Write CSV
-    cpath = f"monitoring/drift_summaries/drift_summary_{latest_date}.csv"
-    with open(cpath, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()) if rows else [])
-        if rows:
+    cpath = os.path.join(SUMMARY_DIR, f"drift_summary_{latest_date}.csv")
+    if rows:
+        with open(cpath, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
             writer.writeheader()
             writer.writerows(rows)
 
-    print(f"Summary written to {jpath} and {cpath}")
+    print(f"✅ Summary written to:\n  {jpath}\n  {cpath}")
+
+    # Trigger email alert check
+    subprocess.run(
+        [sys.executable, f"/Users/sriks/Documents/Projects/IntentDriftWatch/alerting/alert_trigger.py"],
+        check=False
+    )
 
 if __name__ == "__main__":
     main()
