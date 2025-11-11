@@ -3208,5 +3208,725 @@
     "source": "combined",
     "path": "data_pipeline/data/processed/combined/Elections_combined.json",
     "timestamp": "2025-11-11 03:46:06.806089"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:42.212817"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:42.842201"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:43.505666"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 17:44:43.507516"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:49.915739"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:50.293684"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:50.892294"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 17:44:50.894417"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:57.302476"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:57.834729"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 17:44:58.517762"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 17:44:58.520195"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:04.718653"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:05.124718"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:05.793353"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 17:45:05.795625"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:12.108478"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:12.480951"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:13.297484"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 17:45:13.299812"
+  },
+  {
+    "topic": "Elections",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:19.584058"
+  },
+  {
+    "topic": "Elections",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:19.911591"
+  },
+  {
+    "topic": "Elections",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 17:45:20.670690"
+  },
+  {
+    "topic": "Elections",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 17:45:20.673123"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Artificial_Intelligence_combined.json",
+    "timestamp": "2025-11-11 17:45:25.687490"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Climate_Change_combined.json",
+    "timestamp": "2025-11-11 17:45:25.715444"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Space_Exploration_combined.json",
+    "timestamp": "2025-11-11 17:45:25.737009"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Cryptocurrency_combined.json",
+    "timestamp": "2025-11-11 17:45:25.754385"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Electric_Vehicles_combined.json",
+    "timestamp": "2025-11-11 17:45:25.763812"
+  },
+  {
+    "topic": "Elections",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Elections_combined.json",
+    "timestamp": "2025-11-11 17:45:25.777440"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:28.317110"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:29.008135"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:29.709526"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:45:29.711671"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:36.324655"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:36.755922"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:37.414323"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:45:37.416280"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:44.259269"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:44.567107"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:45.223854"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:45:45.225907"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:51.245175"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:51.705824"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:52.374456"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:45:52.376927"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:58.759731"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:59.097005"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 18:45:59.782541"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:45:59.784909"
+  },
+  {
+    "topic": "Elections",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 18:46:06.491080"
+  },
+  {
+    "topic": "Elections",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 18:46:06.844717"
+  },
+  {
+    "topic": "Elections",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 18:46:07.531037"
+  },
+  {
+    "topic": "Elections",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:46:07.533562"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Artificial_Intelligence_combined.json",
+    "timestamp": "2025-11-11 18:46:12.541999"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Climate_Change_combined.json",
+    "timestamp": "2025-11-11 18:46:12.553095"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Space_Exploration_combined.json",
+    "timestamp": "2025-11-11 18:46:12.568967"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Cryptocurrency_combined.json",
+    "timestamp": "2025-11-11 18:46:12.583566"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Electric_Vehicles_combined.json",
+    "timestamp": "2025-11-11 18:46:12.591739"
+  },
+  {
+    "topic": "Elections",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Elections_combined.json",
+    "timestamp": "2025-11-11 18:46:12.604978"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:22.139305"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:22.870180"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:23.486400"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:49:23.488779"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:30.148832"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:30.588668"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:31.301475"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:49:31.303596"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:37.595808"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:37.917465"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:38.610942"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:49:38.613237"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:44.650235"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:45.073997"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:45.848028"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:49:45.850476"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:52.347787"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:52.668106"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 18:49:53.348597"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:49:53.351113"
+  },
+  {
+    "topic": "Elections",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 18:50:02.039580"
+  },
+  {
+    "topic": "Elections",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 18:50:02.375092"
+  },
+  {
+    "topic": "Elections",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 18:50:03.071349"
+  },
+  {
+    "topic": "Elections",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 18:50:03.073842"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Artificial_Intelligence_combined.json",
+    "timestamp": "2025-11-11 18:50:08.084896"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Climate_Change_combined.json",
+    "timestamp": "2025-11-11 18:50:08.098811"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Space_Exploration_combined.json",
+    "timestamp": "2025-11-11 18:50:08.115556"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Cryptocurrency_combined.json",
+    "timestamp": "2025-11-11 18:50:08.130337"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Electric_Vehicles_combined.json",
+    "timestamp": "2025-11-11 18:50:08.138589"
+  },
+  {
+    "topic": "Elections",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Elections_combined.json",
+    "timestamp": "2025-11-11 18:50:08.152019"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:26.606474"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:27.241781"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Artificial_Intelligence_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:27.974566"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 19:14:27.976955"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:34.546532"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:34.987532"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Climate_Change_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:35.794213"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 19:14:35.796727"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:42.507711"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:42.856539"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Space_Exploration_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:43.596026"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 19:14:43.598303"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:49.660692"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:50.035610"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Cryptocurrency_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:50.652043"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 19:14:50.654596"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:57.188570"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:57.540794"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Electric_Vehicles_2025-11-11.json",
+    "timestamp": "2025-11-11 19:14:58.334612"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 19:14:58.337208"
+  },
+  {
+    "topic": "Elections",
+    "source": "reddit",
+    "path": "data_pipeline/data/raw/reddit/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 19:15:04.862403"
+  },
+  {
+    "topic": "Elections",
+    "source": "wikipedia",
+    "path": "data_pipeline/data/raw/wiki/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 19:15:05.433009"
+  },
+  {
+    "topic": "Elections",
+    "source": "rss",
+    "path": "data_pipeline/data/raw/news/Elections_2025-11-11.json",
+    "timestamp": "2025-11-11 19:15:06.104563"
+  },
+  {
+    "topic": "Elections",
+    "source": "data_collection",
+    "path": "success",
+    "timestamp": "2025-11-11 19:15:06.107169"
+  },
+  {
+    "topic": "Artificial Intelligence",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Artificial_Intelligence_combined.json",
+    "timestamp": "2025-11-11 19:15:11.122139"
+  },
+  {
+    "topic": "Climate Change",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Climate_Change_combined.json",
+    "timestamp": "2025-11-11 19:15:11.142845"
+  },
+  {
+    "topic": "Space Exploration",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Space_Exploration_combined.json",
+    "timestamp": "2025-11-11 19:15:11.160688"
+  },
+  {
+    "topic": "Cryptocurrency",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Cryptocurrency_combined.json",
+    "timestamp": "2025-11-11 19:15:11.182304"
+  },
+  {
+    "topic": "Electric Vehicles",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Electric_Vehicles_combined.json",
+    "timestamp": "2025-11-11 19:15:11.192803"
+  },
+  {
+    "topic": "Elections",
+    "source": "combined",
+    "path": "data_pipeline/data/processed/combined/Elections_combined.json",
+    "timestamp": "2025-11-11 19:15:11.208256"
   }
 ]

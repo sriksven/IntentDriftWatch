@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/sriks/Documents/Projects/IntentDriftWatch/mlruns/581830134498217675/ee86e41857974027a57f575b1ce1789b/artifacts
+end_time: 1762883129423
+entry_point_name: ''
+experiment_id: '581830134498217675'
+lifecycle_stage: active
+run_id: ee86e41857974027a57f575b1ce1789b
+run_name: Run_2025-11-11_17-44-40
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762883080736
+status: 3
+tags: []
+user_id: sriks

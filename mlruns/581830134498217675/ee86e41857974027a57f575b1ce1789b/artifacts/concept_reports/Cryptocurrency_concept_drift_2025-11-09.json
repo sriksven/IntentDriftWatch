@@ -1,0 +1,12 @@
+{
+  "topic": "Cryptocurrency",
+  "timestamp": "2025-11-11 17:45:29.006118",
+  "old_date": "2025-11-08",
+  "new_date": "2025-11-09",
+  "train_acc": 0.9465648854961832,
+  "test_acc": 0.44274809160305345,
+  "train_f1": 0.9457364341085271,
+  "test_f1": 0.3652173913043478,
+  "accuracy_drop": 0.5038,
+  "status": "Concept Drift Detected"
+}

@@ -1,0 +1,12 @@
+{
+  "topic": "Artificial Intelligence",
+  "timestamp": "2025-11-11 17:45:28.919941",
+  "old_date": "2025-11-08",
+  "new_date": "2025-11-09",
+  "train_acc": 0.9615384615384616,
+  "test_acc": 0.5384615384615384,
+  "train_f1": 0.9523809523809523,
+  "test_f1": 0.4444444444444444,
+  "accuracy_drop": 0.4231,
+  "status": "Concept Drift Detected"
+}
