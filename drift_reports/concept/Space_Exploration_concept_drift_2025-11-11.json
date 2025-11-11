@@ -1,0 +1,12 @@
+{
+  "topic": "Space Exploration",
+  "timestamp": "2025-11-11 03:46:13.936841",
+  "old_date": "2025-11-09",
+  "new_date": "2025-11-11",
+  "train_acc": 0.9541984732824428,
+  "test_acc": 0.48091603053435117,
+  "train_f1": 0.9620253164556962,
+  "test_f1": 0.5903614457831325,
+  "accuracy_drop": 0.4733,
+  "status": "Concept Drift Detected"
+}

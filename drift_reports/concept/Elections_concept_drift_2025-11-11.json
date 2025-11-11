@@ -1,0 +1,12 @@
+{
+  "topic": "Elections",
+  "timestamp": "2025-11-11 03:46:13.822248",
+  "old_date": "2025-11-09",
+  "new_date": "2025-11-11",
+  "train_acc": 0.9694656488549618,
+  "test_acc": 0.4580152671755725,
+  "train_f1": 0.9722222222222222,
+  "test_f1": 0.4409448818897638,
+  "accuracy_drop": 0.5115,
+  "status": "Concept Drift Detected"
+}

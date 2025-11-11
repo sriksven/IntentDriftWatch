@@ -1,12 +1,12 @@
 {
   "topic": "Electric Vehicles",
-  "timestamp": "2025-11-09 14:19:23.780097",
+  "timestamp": "2025-11-11 03:46:13.455459",
   "old_date": "2025-11-08",
   "new_date": "2025-11-09",
   "train_acc": 1.0,
   "test_acc": 0.48091603053435117,
   "train_f1": 1.0,
-  "test_f1": 0.45161290322580644,
+  "test_f1": 0.5,
   "accuracy_drop": 0.5191,
   "status": "Concept Drift Detected"
 }

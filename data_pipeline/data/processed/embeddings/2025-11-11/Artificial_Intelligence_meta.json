@@ -1,0 +1,10 @@
+{
+  "topic": "Artificial Intelligence",
+  "source_cleaned_file": "Artificial_Intelligence_cleaned_2025-11-11.json",
+  "timestamp": "2025-11-11 03:46:09.560169",
+  "num_texts": 131,
+  "embedding_shape": [
+    131,
+    384
+  ]
+}

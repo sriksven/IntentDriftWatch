@@ -1,12 +1,12 @@
 {
   "topic": "Climate Change",
-  "timestamp": "2025-11-09 14:19:23.720562",
+  "timestamp": "2025-11-11 03:46:13.662925",
   "old_date": "2025-11-08",
   "new_date": "2025-11-09",
-  "train_acc": 0.9618320610687023,
-  "test_acc": 0.48854961832061067,
-  "train_f1": 0.9635036496350365,
-  "test_f1": 0.5179856115107914,
-  "accuracy_drop": 0.4733,
+  "train_acc": 0.9770992366412213,
+  "test_acc": 0.5419847328244275,
+  "train_f1": 0.9784172661870504,
+  "test_f1": 0.6052631578947368,
+  "accuracy_drop": 0.4351,
   "status": "Concept Drift Detected"
 }
