@@ -1,7 +1,7 @@
 {
   "topic": "Elections",
   "source_cleaned_file": "Elections_cleaned_2025-11-11.json",
-  "timestamp": "2025-11-11 19:15:14.205138",
+  "timestamp": "2025-11-11 19:49:09.899188",
   "num_texts": 131,
   "embedding_shape": [
     131,

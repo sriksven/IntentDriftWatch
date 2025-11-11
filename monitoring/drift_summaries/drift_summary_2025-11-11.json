@@ -1,0 +1,78 @@
+{
+  "generated_at": "2025-11-11",
+  "date": "2025-11-11",
+  "rows": [
+    {
+      "topic": "Artificial Intelligence",
+      "date": "2025-11-11",
+      "semantic_status": "Stable",
+      "semantic_score": 0.1006,
+      "cosine_drift": 0.06998473011506567,
+      "jsd_drift": 0.13121476769447327,
+      "concept_status": "Moderate Drift",
+      "test_acc": 0.6455696202531646,
+      "test_f1": 0.6444292393659482,
+      "accuracy_drop": 0.3544
+    },
+    {
+      "topic": "Climate Change",
+      "date": "2025-11-11",
+      "semantic_status": "Stable",
+      "semantic_score": 0.0913,
+      "cosine_drift": 0.05089861200583523,
+      "jsd_drift": 0.1317766308784485,
+      "concept_status": "Stable",
+      "test_acc": 0.569620253164557,
+      "test_f1": 0.5657279298727635,
+      "accuracy_drop": 0.4304
+    },
+    {
+      "topic": "Cryptocurrency",
+      "date": "2025-11-11",
+      "semantic_status": "Stable",
+      "semantic_score": 0.086,
+      "cosine_drift": 0.041841601229930414,
+      "jsd_drift": 0.13016068935394287,
+      "concept_status": "Moderate Drift",
+      "test_acc": 0.620253164556962,
+      "test_f1": 0.6147049153378267,
+      "accuracy_drop": 0.3688
+    },
+    {
+      "topic": "Elections",
+      "date": "2025-11-11",
+      "semantic_status": "Stable",
+      "semantic_score": 0.1109,
+      "cosine_drift": 0.08525051316664689,
+      "jsd_drift": 0.1365162879228592,
+      "concept_status": "Moderate Drift",
+      "test_acc": 0.620253164556962,
+      "test_f1": 0.6195219447197803,
+      "accuracy_drop": 0.3797
+    },
+    {
+      "topic": "Electric Vehicles",
+      "date": "2025-11-11",
+      "semantic_status": "Stable",
+      "semantic_score": 0.0897,
+      "cosine_drift": 0.0486058528429536,
+      "jsd_drift": 0.13072016835212708,
+      "concept_status": "Stable",
+      "test_acc": 0.5063291139240507,
+      "test_f1": 0.500574815106264,
+      "accuracy_drop": 0.4882
+    },
+    {
+      "topic": "Space Exploration",
+      "date": "2025-11-11",
+      "semantic_status": "Stable",
+      "semantic_score": 0.1048,
+      "cosine_drift": 0.07485689511942328,
+      "jsd_drift": 0.1347564458847046,
+      "concept_status": "Stable",
+      "test_acc": 0.5949367088607594,
+      "test_f1": 0.5948068808828303,
+      "accuracy_drop": 0.3887
+    }
+  ]
+}
