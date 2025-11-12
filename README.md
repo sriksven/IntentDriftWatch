@@ -1,13 +1,9 @@
 # IntentDriftWatch
 **End-to-End Local MLOps System for Detecting Semantic and Concept Drift in Trending Topics**
 
----
-
 ## Overview
 
 IntentDriftWatch is a fully local, production-grade MLOps system that monitors both **semantic drift** (how topic meaning changes over time) and **concept drift** (how model performance degrades due to that change). The system continuously collects multi-source data, computes embeddings, detects drift, and triggers retraining workflows.
-
----
 
 ## Objectives
 
@@ -15,8 +11,6 @@ IntentDriftWatch is a fully local, production-grade MLOps system that monitors b
 2. Quantify the effect of semantic drift on model accuracy (concept drift).
 3. Automate the full workflow of collection, processing, embedding, drift analysis, and retraining.
 4. Provide UI dashboards for both drift types using FastAPI and React.
-
----
 
 ## Core Components
 
@@ -27,8 +21,6 @@ IntentDriftWatch is a fully local, production-grade MLOps system that monitors b
 | **Data Collectors** | Fetches real-world data from Reddit, Wikipedia, RSS feeds, and X. |
 | **Drift Analytics** | Computes cosine, JSD, and accuracy decay metrics for interpretation. |
 | **Pipelines** | Orchestrates the end-to-end execution using modular scripts. |
-
----
 
 ## Architecture Overview
 
@@ -64,8 +56,6 @@ IntentDriftWatch is a fully local, production-grade MLOps system that monitors b
                └───────────────────────────┘
 ```
 
----
-
 ## Semantic Drift Visualization (Unsupervised)
 
 - Measures change in topic embeddings across time snapshots.
@@ -78,8 +68,6 @@ IntentDriftWatch is a fully local, production-grade MLOps system that monitors b
 |--------|---------------|------------|--------------|---------|
 | Artificial Intelligence | 0.22 | 0.18 | 0.20 | Stable |
 | Cryptocurrency | 0.47 | 0.44 | 0.46 | Drift Detected |
-
----
 
 ## Concept Drift Visualization (Supervised)
 
@@ -95,8 +83,6 @@ IntentDriftWatch is a fully local, production-grade MLOps system that monitors b
 | 2025-11-07 | 0.27 | 0.75 | Minor Drift |
 | 2025-11-08 | 0.42 | 0.63 | Drift Detected |
 
----
-
 ## Data Flow Summary
 
 | Stage | Input | Output | Module |
@@ -107,8 +93,6 @@ IntentDriftWatch is a fully local, production-grade MLOps system that monitors b
 | Embedding | Cleaned text | Vector representations (.npy) | `generate_embeddings.py` |
 | Semantic Drift | Embedding pairs | Drift scores | `analytics/drift_utils.py` |
 | Concept Drift | Embeddings + labels | Accuracy metrics | `models/train_xgb.py` |
-
----
 
 ## Updated Project Structure
 
@@ -161,8 +145,6 @@ IntentDriftWatch/
 └── README.md
 ```
 
----
-
 ## Usage
 
 ### Step 1: Setup
@@ -190,8 +172,6 @@ python -m analytics.drift_utils
 ```bash
 python -m models.train_xgb
 ```
-
----
 
 ## Recent Additions and Implementation Details
 
@@ -301,8 +281,6 @@ Defining the expected JSON fields allows downstream systems to validate inputs a
 - MLflow integration can store experiment parameters and metrics for semantic drift and concept drift.  
 - Evidently report files can be generated and saved alongside summaries for deeper offline inspection.
 
----
-
 ## Backend Plan left to do
 
 A minimal FastAPI service will expose the aggregated artifacts for the dashboard and any external monitoring system.
@@ -327,8 +305,6 @@ A minimal FastAPI service will expose the aggregated artifacts for the dashboard
 - The service reads the `drift_reports/summaries` directory and does not require a separate database.  
 - For public dashboards, allow read-only endpoints. If you later need protection, add an API key header check.
 
----
-
 ## Frontend Plan left to do
 
 A React and Vite dashboard will visualize both semantic and concept drift, and surface alerts.
@@ -349,8 +325,6 @@ A React and Vite dashboard will visualize both semantic and concept drift, and s
 - Host static build on GitHub Pages or Vercel.  
 - Set Vite `base` path to the repository name when deploying to GitHub Pages.  
 - Configure the frontend to call the deployed backend URL instead of localhost.
-
----
 
 ## CI and CD Plan left to do
 
@@ -387,8 +361,6 @@ Once backend and frontend stabilize, introduce a GitHub Actions pipeline for qua
 - Cache Python dependencies to speed up repeated runs.  
 - Protect main branch by requiring the CI checks to pass before merging.
 
----
-
 ## Troubleshooting
 
 - Gmail SMTP returns 535 Username and Password not accepted  
@@ -405,8 +377,6 @@ Once backend and frontend stabilize, introduce a GitHub Actions pipeline for qua
   - Confirm CORS settings on the backend if you restrict origins.  
   - Check that summaries are present on the server filesystem.
 
----
-
 ## Future Extensions
 
 - Integrate Airflow for DAG-based orchestration.  
@@ -417,8 +387,97 @@ Once backend and frontend stabilize, introduce a GitHub Actions pipeline for qua
 - Add Slack webhook alerts in parallel with SMTP if desired.  
 - Add Grafana or Kibana panels for long-term drift trend monitoring.
 
----
-
 ## Summary
 
 IntentDriftWatch now combines both unsupervised semantic drift and supervised concept drift detection in a unified and modular local MLOps environment. The project offers a complete simulation of real-world data evolution monitoring and model retraining pipelines used in modern search and recommendation systems. The latest additions include an aggregated daily summary and automated email alerts over SMTP. The remaining work focuses on hosting a lightweight FastAPI backend, delivering a React and Vite dashboard, and introducing CI and CD with strong tests and artifact archiving.
+
+## Updates Completed Now
+
+This section lists updates that are already implemented and tested.
+
+1. FastAPI backend created under `backend/` with routes:
+   - `/` health check
+   - `/latest_summary`
+   - `/semantic_drift?topic=<name>&n=<k>`
+   - `/concept_drift?topic=<name>&n=<k>`
+   - `/alert_status`
+
+2. Backend deployed on Render:
+   - Base URL: `https://intentdriftwatch.onrender.com`
+   - Verify with `https://intentdriftwatch.onrender.com/docs`
+
+3. Frontend scaffolded with React and Vite:
+   - Local dev server on `http://localhost:5173`
+   - Frontend polls `/latest_summary` every 30 seconds
+
+4. SMTP emailing integrated and tested with Gmail App Password
+
+5. Aggregation script writes summaries to `drift_reports/summaries/` and triggers alert check
+
+## Complete Command Reference
+
+### Python environment and pipeline
+
+```bash
+python3 -m venv intentdriftwatch
+source intentdriftwatch/bin/activate
+pip install -r requirements.txt
+
+python -m pipelines.full_pipeline
+python drift_reports/aggregate_drift_summary.py
+```
+
+### Local backend
+
+```bash
+uvicorn backend.app:app --reload --port 8000
+# Open http://127.0.0.1:8000 and http://127.0.0.1:8000/docs
+```
+
+### Render backend
+
+- Base URL: `https://intentdriftwatch.onrender.com`
+- Endpoints to test in browser:
+  - `/`
+  - `/latest_summary`
+  - `/semantic_drift?topic=Artificial%20Intelligence&n=10`
+  - `/concept_drift?topic=Artificial%20Intelligence&n=10`
+  - `/alert_status`
+- Full docs: `https://intentdriftwatch.onrender.com/docs`
+
+### Frontend local setup
+
+```bash
+npm create vite@latest intentdriftwatch-ui -- --template react
+cd intentdriftwatch-ui
+npm install
+# create src/config.js with:
+#   export const API_BASE = "https://intentdriftwatch.onrender.com";
+npm run dev
+# Open http://localhost:5173
+```
+
+### Frontend production build
+
+```bash
+npm run build
+# Deploy dist/ to GitHub Pages or Vercel
+```
+
+## Remaining Items
+
+1. CI and CD with GitHub Actions:
+   - Lint with black and flake8
+   - Run tests with pytest
+   - Upload `drift_reports/summaries/*.json` as artifacts
+   - Optional: auto-trigger retraining workflow when drift is detected
+
+2. Frontend charts and UI polish:
+   - Semantic and concept drift trend charts
+   - Status badges and alert banner
+   - Topic filter and search
+
+3. Optional integrations:
+   - Airflow DAGs for scheduling
+   - Slack webhook alerts
+   - MLflow and Evidently visual layers

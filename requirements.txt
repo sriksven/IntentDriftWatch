@@ -8,6 +8,8 @@ numpy
 scipy
 fastapi
 uvicorn
+httpie
+
 
 
 # Utility & Logging
