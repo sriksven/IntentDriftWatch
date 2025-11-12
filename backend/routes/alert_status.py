@@ -1,27 +1,40 @@
 from fastapi import APIRouter
 from pathlib import Path
-import json, os
-from dotenv import load_dotenv
+import json
 
-load_dotenv()
 router = APIRouter()
 
-SUMMARY_DIR = Path("/Users/sriks/Documents/Projects/IntentDriftWatch/drift_reports/summaries")
-
-SEMANTIC_THR = float(os.getenv("SEMANTIC_DRIFT_THRESHOLD", "0.35"))
-ACC_DROP_THR = float(os.getenv("CONCEPT_ACC_DROP_THRESHOLD", "0.08"))
+BASE_DIR = Path(__file__).resolve().parents[2]
+SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
 @router.get("/alert_status")
-def alert_status():
+def get_alert_status():
+    """
+    Returns alert-level status based on latest drift summary.
+    """
     files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
     if not files:
-        return {"has_alert": False, "alerts": []}
-    with open(files[-1]) as f:
-        summary = json.load(f)
+        return {"status": "No data", "alerts": []}
+
+    latest_file = files[-1]
+    with open(latest_file) as f:
+        data = json.load(f)
+
     alerts = []
-    for row in summary.get("rows", []):
-        sem = row.get("semantic_score")
-        acc = row.get("accuracy_drop")
-        if (sem and sem >= SEMANTIC_THR) or (acc and abs(acc) >= ACC_DROP_THR):
-            alerts.append(row)
-    return {"has_alert": bool(alerts), "alerts": alerts, "date": summary.get("date")}
+    for row in data.get("rows", []):
+        if (
+            row.get("semantic_status") in ["Drift Detected", "Moderate Drift"]
+            or row.get("concept_status") in ["Drift Detected", "Moderate Drift"]
+        ):
+            alerts.append({
+                "topic": row.get("topic"),
+                "semantic_status": row.get("semantic_status"),
+                "concept_status": row.get("concept_status"),
+                "semantic_score": row.get("semantic_score"),
+                "accuracy_drop": row.get("accuracy_drop")
+            })
+
+    if alerts:
+        return {"status": "Drift Detected", "alerts": alerts}
+    else:
+        return {"status": "Stable", "alerts": []}
