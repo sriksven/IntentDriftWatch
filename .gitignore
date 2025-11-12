@@ -1,0 +1,9 @@
+# Ignore environment and sensitive files
+.env
+__pycache__/
+*.log
+data/raw/
+data/processed/
+data/metadata/
+mlflow/
+monitoring/logs/
