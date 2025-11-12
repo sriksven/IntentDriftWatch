@@ -1,0 +1,57 @@
+name: IntentDriftWatch CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install backend dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run backend tests
+        run: pytest -q
+
+      - name: Run smoke test
+        run: python scripts/smoke_test.py
+
+      - name: Retrain if needed
+        run: python scripts/retrain_check.py
+
+  frontend-lint:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: intentdriftwatch-ui
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npx eslint src
+
+      - name: Run Prettier check
+        run: npx prettier --check "src/**/*.{js,jsx}"
