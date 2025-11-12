@@ -4,13 +4,19 @@ import json
 
 router = APIRouter()
 
-SUMMARY_DIR = Path("/Users/sriks/Documents/Projects/IntentDriftWatch/drift_reports/summaries")
+# Dynamically resolve the project root no matter where this runs
+BASE_DIR = Path(__file__).resolve().parents[2]
+SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
 @router.get("/latest_summary")
 def get_latest_summary():
+    """
+    Returns the most recent drift summary JSON from drift_reports/summaries.
+    """
     files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
     if not files:
-        return {"error": "No summaries found"}
+        return {"error": f"No summaries found in {SUMMARY_DIR}"}
+
     latest_file = files[-1]
     with open(latest_file) as f:
         data = json.load(f)
