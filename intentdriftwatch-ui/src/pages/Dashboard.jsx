@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import DriftCharts from "../components/DriftCharts";
 import TopicModal from "../components/TopicModal";
 
@@ -19,7 +19,7 @@ function Dashboard() {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [error, setError] = useState("");
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setLoading(true);
     setError("");
 
@@ -45,18 +45,18 @@ function Dashboard() {
       setConcept(conceptJson.items || conceptJson || []);
       setAlerts(alertsJson.alerts || alertsJson || []);
 
-    } catch (e) {
+    } catch {
       setError("Failed to load dashboard data. Check backend.");
     }
 
     setLoading(false);
-  }
+  }, [timeRange, modelName]);
 
   useEffect(() => {
     loadData();
     const interval = setInterval(loadData, REFRESH_MS);
     return () => clearInterval(interval);
-  }, [timeRange, modelName]);
+  }, [loadData, REFRESH_MS]);
 
   function handleDateOverride() {
     if (!summaryDate) return;
@@ -200,8 +200,13 @@ function Dashboard() {
                 {alerts.map((a, i) => (
                   <li key={i} className="idw-alert-item">
                     <div className="idw-alert-header">
-                      <span className={`idw-pill ${a.severity === "critical" ? "idw-pill-bad" : a.severity === "warning" ? "idw-pill-warn" : "idw-pill-ok"
-                        }`}>
+                      <span className={`idw-pill ${
+                        a.severity === "critical"
+                          ? "idw-pill-bad"
+                          : a.severity === "warning"
+                          ? "idw-pill-warn"
+                          : "idw-pill-ok"
+                      }`}>
                         {a.severity}
                       </span>
                       <span>{a.timestamp}</span>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTheme } from "../theme/ThemeContext";
 import ThemeToggle from "../components/ThemeToggle";
 
 const DEFAULT_SETTINGS = {
@@ -8,15 +7,11 @@ const DEFAULT_SETTINGS = {
 };
 
 export default function SettingsPage() {
-  const { theme, toggleTheme } = useTheme();
+  const saved = localStorage.getItem("idw-settings");
+  const initial = saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
 
-  const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem("idw-settings");
-    return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
-  });
-
-  const [apiBaseUrl, setApiBaseUrl] = useState(settings.apiBaseUrl);
-  const [refreshInterval, setRefreshInterval] = useState(settings.refreshInterval);
+  const [apiBaseUrl, setApiBaseUrl] = useState(initial.apiBaseUrl);
+  const [refreshInterval, setRefreshInterval] = useState(initial.refreshInterval);
 
   useEffect(() => {
     localStorage.setItem(
@@ -78,7 +73,6 @@ export default function SettingsPage() {
         <h2>Theme</h2>
         <p>Toggle dark or light mode.</p>
         <ThemeToggle />
-
       </section>
     </div>
   );
