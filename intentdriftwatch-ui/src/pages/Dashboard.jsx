@@ -56,7 +56,7 @@ function Dashboard() {
 
     setLoading(false);
 
-  }, [timeRange, modelName, API_BASE]);
+  }, [timeRange, modelName]);
 
   /* -------------------------------------------------- */
   /*  SAFE AUTO REFRESH (no ESLint warnings)            */
