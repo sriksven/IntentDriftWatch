@@ -20,16 +20,14 @@ matplotlib
 tqdm
 python-dotenv
 
-# Development & Notebooks
-jupyter
-ipykernel
+
 
 # Data Collection
 psaw
 wikipedia-api
 praw
 snscrape
-tweepy
+# tweepy
 feedparser
 
 # MLOps & Drift Visualization
