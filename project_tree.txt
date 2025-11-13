@@ -1,0 +1,95 @@
+IntentDriftWatch/
+├── README.md
+├── requirements.txt
+├── .env
+│
+├── alerting/
+│   ├── mailer.py
+│   └── alert_trigger.py
+│
+├── analytics/
+│   ├── drift_utils.py
+│   ├── evidently_reports.py
+│   ├── plotly_reports.py
+│   └── semantic_drift.py
+│
+├── api/
+│   ├── model_store/
+│   └── utils/
+│       └── embeddings.py
+│
+├── backend/
+│   ├── __init__.py
+│   ├── app.py
+│   └── routes/
+│       ├── alert_status.py
+│       ├── concept_drift.py
+│       ├── drift_summary.py
+│       └── semantic_drift.py
+│
+├── data_pipeline/
+│   ├── __init__.py
+│   ├── clean_combined_data.py
+│   ├── combine_sources.py
+│   ├── generate_embeddings.py
+│   ├── data/
+│   │   ├── raw/
+│   │   └── processed/
+│   ├── data_collectors/
+│   │   ├── collector_pipeline.py
+│   │   ├── reddit_scraper.py
+│   │   ├── rss_scraper.py
+│   │   ├── twitter_scraper.py
+│   │   └── wiki_scraper.py
+│   └── utils/
+│       ├── io_utils.py
+│       ├── log_data_collection.py
+│       └── text_cleaning.py
+│
+├── drift_reports/
+│   ├── concept/
+│   ├── semantic/
+│   ├── summaries/
+│   └── visual/
+│
+├── intentdriftwatch-ui/
+│   ├── index.html
+│   ├── package.json
+│   ├── eslint.config.js
+│   ├── vite.config.js
+│   ├── public/
+│   │   └── vite.svg
+│   └── src/
+│       ├── App.jsx
+│       ├── App.css
+│       ├── config.js
+│       ├── index.css
+│       └── main.jsx
+│
+├── logging/
+│   ├── alerts/
+│   └── logs/
+│       └── data_collection_log.json
+│
+├── models/
+│   ├── __init__.py
+│   └── concept_drift_xgb.py
+│
+├── monitoring/
+│   ├── drift_summary.py
+│   └── logs/
+│       ├── pipeline_2025-11-11_19-14-19.log
+│       └── pipeline_2025-11-11_19-48-15.log
+│
+├── pipelines/
+│   ├── full_pipeline.py
+│
+├── scripts/
+│   ├── __init__.py
+│   ├── smoke_test.py
+│   └── retrain_check.py
+│
+└── tests/
+    ├── __init__.py
+    ├── test_backend_endpoints.py
+    └── test_drift_utils.py
