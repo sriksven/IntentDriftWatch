@@ -20,8 +20,6 @@ matplotlib
 tqdm
 python-dotenv
 
-
-
 # Data Collection
 psaw
 wikipedia-api
