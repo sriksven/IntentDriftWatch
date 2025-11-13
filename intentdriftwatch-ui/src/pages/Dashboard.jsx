@@ -52,11 +52,23 @@ function Dashboard() {
     setLoading(false);
   }, [timeRange, modelName]);
 
-  useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, REFRESH_MS);
-    return () => clearInterval(interval);
-  }, [loadData, REFRESH_MS]);
+    useEffect(() => {
+    let isMounted = true;
+
+    // Safe initial load
+    requestAnimationFrame(() => {
+      if (isMounted) loadData();
+    });
+
+    const interval = setInterval(() => {
+      if (isMounted) loadData();
+    }, REFRESH_MS);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [timeRange, modelName]);
 
   function handleDateOverride() {
     if (!summaryDate) return;
