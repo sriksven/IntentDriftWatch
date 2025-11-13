@@ -1,17 +1,27 @@
 import json
 from pathlib import Path
-from drift_reports.aggregate_drift_summary import aggregate_summaries
+from monitoring.drift_summary import main as run_summary
 
 def main():
     print("Running smoke test...")
 
-    # Run aggregator (ensures output is produced)
-    output = aggregate_summaries()
+    # Run the summary generator
+    run_summary()
 
-    assert output is not None
-    assert Path(output).exists()
+    # Find the latest summary file to validate
+    summaries_dir = Path("drift_reports/summaries")
+    summaries = list(summaries_dir.glob("drift_summary_*.json"))
 
-    print("Smoke test OK")
+    assert summaries, "No summary files generated."
+
+    latest = max(summaries, key=lambda p: p.stat().st_mtime)
+    data = json.loads(latest.read_text())
+
+    # Basic sanity checks
+    assert "rows" in data, "Summary JSON missing 'rows' key."
+    assert isinstance(data["rows"], list), "'rows' must be a list."
+
+    print(f"Smoke test OK — summary generated at {latest}")
 
 if __name__ == "__main__":
     main()

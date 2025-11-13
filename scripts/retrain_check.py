@@ -1,6 +1,6 @@
+from models.concept_drift_xgb import run_concept_drift
 import json
 from pathlib import Path
-from models.train_xgb import train_model
 
 THRESHOLD = 0.20
 
@@ -13,14 +13,14 @@ def main():
     latest = max(summaries, key=lambda p: p.stat().st_mtime)
     data = json.loads(latest.read_text())
 
-    drift_values = [
-        item.get("semantic_drift", 0) for item in data.get("topics", [])
-    ]
+    rows = data.get("rows", [])
+    drift_values = [row.get("semantic_score") for row in rows]
 
-    if any(d > THRESHOLD for d in drift_values):
+    # Safe drift comparison (handles None)
+    if any(float(d or 0) > THRESHOLD for d in drift_values):
         print("Retraining triggered...")
-        model_path = train_model()
-        print(f"Model retrained and saved to {model_path}")
+        run_concept_drift()
+        print("Retraining completed using run_concept_drift()")
     else:
         print("No retraining required.")
 
