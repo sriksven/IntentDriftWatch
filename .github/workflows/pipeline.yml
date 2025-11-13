@@ -1,5 +1,7 @@
 name: IntentDriftWatch Pipeline
 
+permissions:
+  contents: write
 on:
   push:
     branches: ["main"]
@@ -44,6 +46,8 @@ jobs:
     defaults:
       run:
         working-directory: intentdriftwatch-ui
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
