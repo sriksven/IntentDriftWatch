@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from "react";
-import ThemeContext from "./ThemeContext";
+import { createContext, useEffect, useState } from "react";
+
+export const ThemeContext = createContext();
 
 export default function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(
@@ -7,11 +8,14 @@ export default function ThemeProvider({ children }) {
   );
 
   useEffect(() => {
+    const root = document.documentElement;
+
     if (theme === "dark") {
-      document.documentElement.classList.add("dark");
+      root.classList.add("dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      root.classList.remove("dark");
     }
+
     localStorage.setItem("theme", theme);
   }, [theme]);
 
@@ -24,8 +28,4 @@ export default function ThemeProvider({ children }) {
       {children}
     </ThemeContext.Provider>
   );
-}
-
-export function useTheme() {
-  return useContext(ThemeContext);
 }
