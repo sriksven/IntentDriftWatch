@@ -1,6 +1,12 @@
 import json
 from pathlib import Path
 from monitoring.drift_summary import main as run_summary
+import sys
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT))
+
+from monitoring.drift_summary import main as run_summary
 
 def main():
     print("Running smoke test...")

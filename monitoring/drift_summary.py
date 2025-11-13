@@ -18,9 +18,10 @@ from glob import glob
 from pathlib import Path
 import subprocess, sys
 
-BASE_DIR = "/Users/sriks/Documents/Projects/IntentDriftWatch"
-DRIFT_DIR = os.path.join(BASE_DIR, "drift_reports")
-SUMMARY_DIR = os.path.join(DRIFT_DIR, "summaries")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DRIFT_DIR = BASE_DIR / "drift_reports"
+SUMMARY_DIR = DRIFT_DIR / "summaries"
 
 def load_jsons(pattern):
     out = []
@@ -81,10 +82,8 @@ def main():
     print(f"✅ Summary written to:\n  {jpath}\n  {cpath}")
 
     # Trigger email alert check
-    subprocess.run(
-        [sys.executable, f"/Users/sriks/Documents/Projects/IntentDriftWatch/alerting/alert_trigger.py"],
-        check=False
-    )
+    ALERT_SCRIPT = BASE_DIR / "alerting" / "alert_trigger.py"
+    subprocess.run([sys.executable, str(ALERT_SCRIPT)], check=False)
 
 if __name__ == "__main__":
     main()
