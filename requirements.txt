@@ -2,27 +2,29 @@
 sentence-transformers==3.0.1
 scikit-learn==1.5.2
 xgboost==2.1.2
-numpy==1.26.4
-pandas==2.2.3
 numpy
+pandas
 scipy
+
+# API & Backend
 fastapi
 uvicorn
 httpie
 
-
+# Testing
+pytest
 
 # Utility & Logging
-joblib==1.4.2
-matplotlib==3.9.2
-tqdm==4.66.5
+joblib
+matplotlib
+tqdm
 python-dotenv
 
 # Development & Notebooks
-jupyter==1.1.1
-ipykernel==6.29.5
+jupyter
+ipykernel
 
-# data collection
+# Data Collection
 psaw
 wikipedia-api
 praw
