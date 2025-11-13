@@ -1,4 +1,3 @@
-
 # IntentDriftWatch
 A Fully Local End-to-End MLOps System for Detecting Semantic and Concept Drift in Evolving Topics
 
@@ -23,8 +22,8 @@ Semantic drift refers to **changes in the meaning or usage of a topic over time*
 This is detected by comparing embeddings generated at different time periods.
 
 Examples:
-- The word “apple” shifting between meaning a fruit vs. the company.
-- “AI safety” shifting from academic alignment to political or regulatory contexts.
+- The word "apple" shifting between meaning a fruit vs. the company.
+- "AI safety" shifting from academic alignment to political or regulatory contexts.
 
 In this system:
 - Embeddings are generated using SentenceTransformers.
@@ -133,12 +132,7 @@ Outputs:
 
 ---
 
-# Updated Project Structure
-(Full directory tree retained, omitted here for brevity but included in previous version. If you want it included again, I can embed it.)
-
----
-
-# Detailed Command Explanations (Option B)
+# Detailed Command Explanations
 
 Below, **every command** is explained in terms of:
 
@@ -156,7 +150,7 @@ Below, **every command** is explained in terms of:
 ## 1. Data Collection
 
 ### Command
-```
+```bash
 python data_pipeline/data_collectors/collector_pipeline.py
 ```
 
@@ -172,7 +166,7 @@ python data_pipeline/data_collectors/collector_pipeline.py
 
 ### Individual Collector Example
 
-```
+```bash
 python data_pipeline/data_collectors/reddit_scraper.py
 ```
 
@@ -188,7 +182,7 @@ Explanation:
 ## 2. Combine Raw Sources
 
 ### Command
-```
+```bash
 python data_pipeline/combine_sources.py
 ```
 
@@ -204,7 +198,7 @@ Explanation:
 ## 3. Clean Combined Data
 
 ### Command
-```
+```bash
 python data_pipeline/clean_combined_data.py
 ```
 
@@ -217,7 +211,7 @@ Explanation:
 ## 4. Generate Embeddings
 
 ### Command
-```
+```bash
 python data_pipeline/generate_embeddings.py
 ```
 
@@ -233,7 +227,7 @@ python data_pipeline/generate_embeddings.py
 ## 5. Semantic Drift
 
 ### Command
-```
+```bash
 python analytics/semantic_drift.py
 ```
 
@@ -247,7 +241,7 @@ Explanation:
 ## 6. Concept Drift
 
 ### Command
-```
+```bash
 python models/concept_drift_xgb.py
 ```
 
@@ -262,7 +256,7 @@ Explanation:
 ## 7. Daily Drift Summary Aggregation
 
 ### Command
-```
+```bash
 python drift_reports/aggregate_drift_summary.py
 ```
 
@@ -279,7 +273,7 @@ Explanation:
 ## 8. Run the Entire Pipeline
 
 ### Command
-```
+```bash
 python pipelines/full_pipeline.py
 ```
 
@@ -296,21 +290,219 @@ Explanation:
 
 ---
 
-## Backend Commands
+# Backend and Frontend Documentation
 
-### Start FastAPI Backend
+## Backend Details
+
+The backend is a FastAPI service that serves drift summaries and analytical artifacts produced by the pipeline. It is fully file‑system based and does not use any external database.
+
+All summaries, semantic drift reports, concept drift reports, and logs are read directly from:
 
 ```
+drift_reports/semantic/
+drift_reports/concept/
+drift_reports/summaries/
+logging/logs/
+```
+
+### Starting the Backend
+
+```bash
 uvicorn backend.app:app --reload --port 8000
 ```
 
 Explanation:
-- Serves API endpoints:
-  - `/latest_summary`
-  - `/semantic_drift`
-  - `/concept_drift`
-  - `/alert_status`
-- Logs under `logging/logs/`.
+- Serves API endpoints at `http://localhost:8000`
+- Automatically reloads on code changes (development mode)
+- Logs under `logging/logs/`
+
+---
+
+## Backend API Endpoints
+
+### 1. GET /latest_summary
+
+**Purpose**
+- Returns the most recent drift summary JSON file from `drift_reports/summaries`.
+
+**How it works**
+- Backend scans the folder for files named:
+  ```
+  drift_summary_YYYY-MM-DD.json
+  ```
+- Parses dates
+- Selects the newest file
+- Returns its full JSON
+
+**Example JSON Response**
+```json
+{
+  "generated_at": "2025-11-12",
+  "date": "2025-11-12",
+  "rows": [
+    {
+      "topic": "Artificial Intelligence",
+      "date": "2025-11-12",
+      "semantic_status": "Stable",
+      "semantic_score": 0.18,
+      "cosine_drift": 0.20,
+      "jsd_drift": 0.16,
+      "concept_status": "Stable",
+      "test_acc": 0.87,
+      "test_f1": 0.84,
+      "accuracy_drop": 0.02
+    }
+  ]
+}
+```
+
+**Common Errors**
+- No summary files present.
+  - Fix: run `python drift_reports/aggregate_drift_summary.py` first.
+
+---
+
+### 2. GET /alert_status
+
+**Purpose**
+- Performs threshold checks on the latest summary.
+- Returns simplified structure containing only alerting topics.
+
+**Example JSON Response**
+```json
+{
+  "alerts": [
+    {
+      "topic": "Cryptocurrency",
+      "type": "semantic",
+      "value": 0.52,
+      "threshold": 0.35
+    }
+  ]
+}
+```
+
+---
+
+### 3. GET /semantic_drift?topic=<name>&n=<k>
+
+**Purpose**
+- Returns last k drift records for a named topic.
+
+**Example URL**
+```
+/semantic_drift?topic=AI&n=10
+```
+
+**Example JSON Response**
+```json
+{
+  "topic": "AI",
+  "history": [
+    {
+      "date": "2025-11-09",
+      "cosine_drift": 0.21,
+      "jsd_drift": 0.13,
+      "drift_score": 0.17
+    }
+  ]
+}
+```
+
+---
+
+### 4. GET /concept_drift?topic=<name>&n=<k>
+
+**Purpose**
+- Returns recent test accuracy, F1, and accuracy drops for a specific topic.
+
+**Example JSON Response**
+```json
+{
+  "topic": "AI",
+  "history": [
+    {
+      "date": "2025-11-09",
+      "test_acc": 0.82,
+      "test_f1": 0.80,
+      "accuracy_drop": 0.05
+    }
+  ]
+}
+```
+
+---
+
+## Backend File Selection Strategy
+
+When the backend loads any data:
+
+- It lists all files in the directory.
+- Extracts dates from filenames.
+- Picks the latest date.
+- Loads the file.
+- Returns contents as-is.
+
+This keeps the backend stateless and simple.
+
+---
+
+## Backend Logging
+
+Logs are located here:
+
+```
+logging/logs/
+```
+
+Every request writes:
+- Timestamp
+- Endpoint hit
+- Response status
+- Any errors
+
+---
+
+## Backend-to-Frontend Data Flow
+
+```
+Frontend (React)
+       |
+       |  polls every 30 sec
+       ▼
+Backend (FastAPI)
+/latest_summary
+       |
+       ▼
+Reads newest summary from:
+drift_reports/summaries/
+       |
+       ▼
+Returns structured JSON
+       |
+       ▼
+UI parses rows and updates:
+- tables
+- graphs
+- alert banner
+```
+
+---
+
+# Frontend Details
+
+The frontend is a React and Vite application that continuously fetches drift summaries and visualizes them.
+
+Directory structure:
+
+```
+intentdriftwatch-ui/src/
+├── App.jsx
+├── components/
+├── hooks/
+├── config.js
+└── main.jsx
+```
 
 ---
 
@@ -318,62 +510,232 @@ Explanation:
 
 ### Start UI in Development
 
-```
+```bash
 cd intentdriftwatch-ui
 npm install
 npm run dev
 ```
 
 Explanation:
-- Starts local development UI at:
-  - `http://localhost:5173`
-- UI polls backend every 30 seconds.
+- Starts local development UI at `http://localhost:5173`
+- UI polls backend every 30 seconds for updates
+- Hot module reloading enabled for development
 
 ### Build UI for Production
 
-```
+```bash
 npm run build
 ```
 
 Outputs:
-- Production-ready static files under `dist/`.
+- Production-ready static files under `dist/`
+- Optimized and minified assets
+- Ready for deployment to any static hosting service
 
 ---
 
-# How the Backend Works
+## How the UI Works
 
-- FastAPI app lives in `backend/app.py`.
-- Routes reside under `backend/routes/`.
-- The backend:
-  - Loads summaries from disk.
-  - Returns JSON data to UI.
-  - Computes alert flags.
-  - Does not require a database.
+### 1. Fetching Data from Backend
+
+UI polls this endpoint every 30 seconds by default:
+
+```
+GET http://localhost:8000/latest_summary
+```
+
+Or in production:
+
+```
+GET https://intentdriftwatch.onrender.com/latest_summary
+```
+
+Configured in:
+
+```javascript
+// src/config.js
+export const API_BASE = "http://localhost:8000";
+// or for production:
+// export const API_BASE = "https://intentdriftwatch.onrender.com";
+```
 
 ---
 
-# How the UI Works
+### 2. UI Data Flow
 
-- Built with React and Vite.
-- Polls the backend via:
-  ```
-  GET /latest_summary
-  ```
-- Displays:
-  - Topic table
-  - Semantic drift trend lines
-  - Concept drift trend lines
-  - Alert banners
-- Configuration set in `src/config.js`.
+```
+App.jsx
+   |
+   | fetch latest summary
+   ▼
+State update (setSummaryData)
+   |
+   | pass props to child components
+   ▼
+Dashboard components render
+   |
+   ├── SummaryTable
+   ├── SemanticDriftChart
+   ├── ConceptDriftChart
+   └── AlertBanner
+```
+
+---
+
+### 3. UI Components Explained
+
+#### SummaryTable.jsx
+- Displays the latest drift summary in tabular form.
+- Columns: topic, semantic score, concept score, status.
+- Color-coded status indicators for quick assessment.
+
+#### SemanticDriftChart.jsx
+- Plots time series of cosine drift and JSD.
+- Interactive tooltips showing exact values.
+- Threshold lines for visual reference.
+
+#### ConceptDriftChart.jsx
+- Plots accuracy and F1 over time.
+- Highlights regions where accuracy drop crosses threshold.
+- Shows model performance degradation trends.
+
+#### AlertBanner.jsx
+- Shows alert messages returned by `/alert_status`.
+- Color-coded by severity (warning/critical).
+- Dismissible notifications.
+
+---
+
+### 4. UI Fetch Logic
+
+Example implementation:
+
+```javascript
+useEffect(() => {
+    async function fetchSummary() {
+        const response = await fetch(API_BASE + "/latest_summary");
+        const json = await response.json();
+        setSummary(json);
+    }
+    
+    // Initial fetch
+    fetchSummary();
+    
+    // Poll every 30 seconds
+    const interval = setInterval(fetchSummary, 30000);
+    
+    // Cleanup on unmount
+    return () => clearInterval(interval);
+}, []);
+```
+
+**Key Features:**
+- Automatic polling every 30 seconds
+- Error handling for failed requests
+- Loading states for better UX
+- Cleanup on component unmount
+
+---
+
+### 5. UI Configuration
+
+The UI behavior can be customized in `src/config.js`:
+
+```javascript
+export const CONFIG = {
+  API_BASE: "http://localhost:8000",
+  POLL_INTERVAL: 30000, // milliseconds
+  SEMANTIC_THRESHOLD: 0.35,
+  CONCEPT_THRESHOLD: 0.10,
+  CHART_COLORS: {
+    semantic: "#3b82f6",
+    concept: "#10b981",
+    alert: "#ef4444"
+  }
+};
+```
+
+---
+
+### 6. UI Deployment
+
+To deploy the UI to production:
+
+1. **Build the production bundle:**
+   ```bash
+   npm run build
+   ```
+
+2. **The `dist/` folder contains:**
+   - Optimized HTML, CSS, and JavaScript
+   - Minified assets
+   - Source maps (optional)
+
+3. **Deploy to hosting service:**
+   - Vercel: `vercel deploy`
+   - Netlify: Drag and drop `dist/` folder
+   - GitHub Pages: Push `dist/` contents
+   - Any static hosting service
+
+4. **Update API configuration:**
+   - Set `API_BASE` in `config.js` to production backend URL
+   - Rebuild after configuration changes
+
+---
+
+## Complete System Integration
+
+### How Backend and Frontend Work Together
+
+1. **Pipeline generates drift reports** → stored in `drift_reports/`
+2. **Backend reads reports** → exposes via REST API
+3. **Frontend polls backend** → fetches latest summaries
+4. **UI renders visualizations** → displays drift trends and alerts
+5. **Alerts propagate** → from reports → backend → UI → user notification
+
+### Data Freshness
+
+- **Pipeline runs:** Daily (configurable via cron or scheduler)
+- **Reports generated:** After each pipeline run
+- **Backend updates:** Automatic (reads latest files)
+- **Frontend polls:** Every 30 seconds
+- **User sees:** Near real-time drift status
 
 ---
 
 # Summary
 
-This README now contains:
-- Complete architectural explanation  
-- Deep definitions of drift types  
-- Detailed command explanations (Option B)  
-- Backend and frontend explanation  
-- Full system context  
+This comprehensive system provides:
 
+**Data Pipeline:**
+- Multi-source data collection (Reddit, Wikipedia, RSS, X)
+- Automated preprocessing and cleaning
+- Embedding generation with SentenceTransformers
+
+**Drift Detection:**
+- Semantic drift via cosine distance and JSD
+- Concept drift via XGBoost classifier testing
+- Automated threshold-based alerting
+
+**Backend:**
+- FastAPI REST endpoints
+- File-system based (no database required)
+- Automatic latest-file selection
+- Per-topic historical queries
+- Comprehensive logging
+
+**Frontend:**
+- React and Vite for modern, fast UI
+- Real-time polling (30-second intervals)
+- Interactive charts and visualizations
+- Alert notifications
+- Configurable thresholds and styling
+
+**Complete MLOps Workflow:**
+- Fully local execution
+- End-to-end automation
+- Production-ready deployment
+- Scalable architecture
+- Extensible design
+
+The system enables continuous monitoring of semantic and concept drift across multiple topics, providing data scientists and ML engineers with actionable insights into model degradation and data distribution shifts over time.
