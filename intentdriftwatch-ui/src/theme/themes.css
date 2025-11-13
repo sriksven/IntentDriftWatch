@@ -1,0 +1,30 @@
+/* ============= LIGHT THEME ============= */
+:root {
+  --bg: #fafafa;
+  --text: #111;
+  --card-bg: #ffffff;
+  --table-header: #f0f0f0;
+  --nav-bg: #ffffff;
+  --nav-text: #111;
+  --accent: #2563eb;
+  --border-color: #ddd;
+}
+
+/* ============= DARK THEME ============= */
+html.dark {
+  --bg: #0f172a;
+  --text: #f1f5f9;
+  --card-bg: #1e293b;
+  --table-header: #1e293b;
+  --nav-bg: #1e293b;
+  --nav-text: #f1f5f9;
+  --accent: #60a5fa;
+  --border-color: #334155;
+}
+
+/* Global backgrounds/text */
+body,
+.idw-root {
+  background: var(--bg);
+  color: var(--text);
+}

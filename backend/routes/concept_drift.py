@@ -1,40 +1,35 @@
-from fastapi import APIRouter, Query
-from pathlib import Path
+from fastapi import APIRouter
 import json
+from pathlib import Path
 
 router = APIRouter()
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
-@router.get("/concept_drift")
-def get_concept_drift(
-    topic: str = Query(..., description="Topic name"),
-    n: int = Query(10, description="Number of latest records")
-):
-    """
-    Returns concept drift (accuracy and F1 trends) for a given topic.
-    """
+def load_latest_summary():
     files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
     if not files:
-        return {"topic": topic, "trend": []}
+        return None
+    with open(files[-1]) as f:
+        return json.load(f)
 
-    trend = []
-    for f in files[-n:]:
-        try:
-            with open(f) as json_file:
-                data = json.load(json_file)
-                for row in data.get("rows", []):
-                    if row.get("topic") == topic:
-                        trend.append({
-                            "date": row.get("date"),
-                            "test_acc": row.get("test_acc"),
-                            "test_f1": row.get("test_f1"),
-                            "accuracy_drop": row.get("accuracy_drop"),
-                            "concept_status": row.get("concept_status")
-                        })
-        except Exception as e:
-            print(f"Error reading {f}: {e}")
-            continue
+@router.get("/concept_drift")
+def get_concept_drift():
+    data = load_latest_summary()
+    if not data:
+        return {"items": []}
 
-    return {"topic": topic, "trend": trend}
+    rows = data.get("rows", [])
+
+    items = []
+    for r in rows:
+        items.append({
+            "feature": r.get("topic"),
+            "test_name": "accuracy_drop",
+            "statistic": r.get("accuracy_drop"),
+            "p_value": None,                   # Not part of your concept drift pipeline
+            "is_drifting": r.get("concept_status") not in ["Stable", "N/A"]
+        })
+
+    return {"items": items}
