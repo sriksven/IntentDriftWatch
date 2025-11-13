@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import ThemeContext from "./ThemeContext";
 
-function ThemeToggle() {
+export default function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(
     localStorage.getItem("theme") || "light"
   );
 
-  // Apply theme class to HTML tag
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
@@ -15,20 +15,17 @@ function ThemeToggle() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+  function toggleTheme() {
+    setTheme((t) => (t === "light" ? "dark" : "light"));
+  }
 
   return (
-    <div className="idw-toggle-container" onClick={toggleTheme}>
-      <div className={`idw-toggle-slider ${theme === "dark" ? "active" : ""}`}>
-        <div className="idw-toggle-knob"></div>
-      </div>
-    </div>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
   );
 }
 
-export default ThemeToggle;
-
-
-
+export function useTheme() {
+  return useContext(ThemeContext);
+}

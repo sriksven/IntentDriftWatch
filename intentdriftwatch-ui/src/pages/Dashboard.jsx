@@ -19,12 +19,17 @@ function Dashboard() {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [error, setError] = useState("");
 
+  /* -------------------------------------------------- */
+  /*  LOAD DATA (memoized for ESLint)                   */
+  /* -------------------------------------------------- */
   const loadData = useCallback(async () => {
     setLoading(true);
     setError("");
 
     try {
-      const query = `?time_range=${encodeURIComponent(timeRange)}&model=${encodeURIComponent(modelName)}`;
+      const query = `?time_range=${encodeURIComponent(timeRange)}&model=${encodeURIComponent(
+        modelName
+      )}`;
 
       const [summaryRes, semRes, conceptRes, alertsRes] = await Promise.all([
         fetch(`${API_BASE}/drift_summary`),
@@ -50,31 +55,38 @@ function Dashboard() {
     }
 
     setLoading(false);
-  }, [timeRange, modelName]);
 
-    useEffect(() => {
-    let isMounted = true;
+  }, [timeRange, modelName, API_BASE]);
 
-    // Safe initial load
+  /* -------------------------------------------------- */
+  /*  SAFE AUTO REFRESH (no ESLint warnings)            */
+  /* -------------------------------------------------- */
+  useEffect(() => {
+    let active = true;
+
     requestAnimationFrame(() => {
-      if (isMounted) loadData();
+      if (active) loadData();
     });
 
     const interval = setInterval(() => {
-      if (isMounted) loadData();
+      if (active) loadData();
     }, REFRESH_MS);
 
     return () => {
-      isMounted = false;
+      active = false;
       clearInterval(interval);
     };
-  }, [timeRange, modelName]);
+  }, [loadData]);
 
+  /* -------------------------------------------------- */
+  /*  DATE OVERRIDE                                      */
+  /* -------------------------------------------------- */
   function handleDateOverride() {
     if (!summaryDate) return;
+
     fetch(`${API_BASE}/drift_summary?date=${summaryDate}`)
-      .then(r => r.json())
-      .then(s => setSummary(s))
+      .then((r) => r.json())
+      .then((s) => setSummary(s))
       .catch(() => setError("Failed to load summary for selected date."));
   }
 
@@ -86,6 +98,9 @@ function Dashboard() {
         <p className="idw-page-subtitle">Live monitoring of semantic and concept drift.</p>
       </header>
 
+      {/* ----------------------------------------------- */}
+      {/* Controls                                         */}
+      {/* ----------------------------------------------- */}
       <section className="idw-controls">
 
         <label className="idw-field">
@@ -116,6 +131,9 @@ function Dashboard() {
 
       {error && <p className="idw-error">{error}</p>}
 
+      {/* ----------------------------------------------- */}
+      {/* Summary Cards                                    */}
+      {/* ----------------------------------------------- */}
       {summary && (
         <section className="idw-summary-row">
           <StatCard label="Semantic Drift Score" value={fmt(summary.semantic_drift_score)} />
@@ -125,6 +143,7 @@ function Dashboard() {
         </section>
       )}
 
+      {/* Charts */}
       <DriftCharts semantic={semantic} concept={concept} />
 
       {/* Semantic Table */}
@@ -133,30 +152,34 @@ function Dashboard() {
           <h3>Semantic Drift</h3>
           <p>Embedding drift per topic.</p>
         </header>
+
         <div className="idw-panel-body">
-          {loading ? <TableSkeleton rows={4} /> :
-            semantic.length === 0 ? <EmptyState message="No semantic drift detected" /> :
-              <table className="idw-table">
-                <thead>
-                  <tr>
-                    <th>Topic</th>
-                    <th>Drift Score</th>
-                    <th>Delta Freq</th>
-                    <th>P Value</th>
+          {loading ? (
+            <TableSkeleton rows={4} />
+          ) : semantic.length === 0 ? (
+            <EmptyState message="No semantic drift detected" />
+          ) : (
+            <table className="idw-table">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Drift Score</th>
+                  <th>Delta Freq</th>
+                  <th>P Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {semantic.map((s, i) => (
+                  <tr key={i} onClick={() => setSelectedTopic(s.topic)}>
+                    <td>{s.topic}</td>
+                    <td>{fmt(s.drift_score)}</td>
+                    <td>{fmt(s.delta_freq)}</td>
+                    <td>{fmt(s.p_value, 4)}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {semantic.map((s, i) => (
-                    <tr key={i} onClick={() => setSelectedTopic(s.topic)}>
-                      <td>{s.topic}</td>
-                      <td>{fmt(s.drift_score)}</td>
-                      <td>{fmt(s.delta_freq)}</td>
-                      <td>{fmt(s.p_value, 4)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-          }
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </section>
 
@@ -166,36 +189,40 @@ function Dashboard() {
           <h3>Concept Drift</h3>
           <p>Distribution drift across labels or features.</p>
         </header>
+
         <div className="idw-panel-body">
-          {loading ? <TableSkeleton rows={4} /> :
-            concept.length === 0 ? <EmptyState message="No concept drift detected" /> :
-              <table className="idw-table">
-                <thead>
-                  <tr>
-                    <th>Feature</th>
-                    <th>Test</th>
-                    <th>Statistic</th>
-                    <th>P Value</th>
-                    <th>Status</th>
+          {loading ? (
+            <TableSkeleton rows={4} />
+          ) : concept.length === 0 ? (
+            <EmptyState message="No concept drift detected" />
+          ) : (
+            <table className="idw-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Test</th>
+                  <th>Statistic</th>
+                  <th>P Value</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {concept.map((c, i) => (
+                  <tr key={i} onClick={() => setSelectedTopic(c.feature || c.label)}>
+                    <td>{c.feature || c.label}</td>
+                    <td>{c.test_name}</td>
+                    <td>{fmt(c.statistic)}</td>
+                    <td>{fmt(c.p_value, 4)}</td>
+                    <td>
+                      <span className={c.is_drifting ? "idw-pill idw-pill-bad" : "idw-pill idw-pill-ok"}>
+                        {c.is_drifting ? "Drifting" : "Stable"}
+                      </span>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {concept.map((c, i) => (
-                    <tr key={i} onClick={() => setSelectedTopic(c.feature || c.label)}>
-                      <td>{c.feature || c.label}</td>
-                      <td>{c.test_name}</td>
-                      <td>{fmt(c.statistic)}</td>
-                      <td>{fmt(c.p_value, 4)}</td>
-                      <td>
-                        <span className={c.is_drifting ? "idw-pill idw-pill-bad" : "idw-pill idw-pill-ok"}>
-                          {c.is_drifting ? "Drifting" : "Stable"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-          }
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </section>
 
@@ -206,28 +233,33 @@ function Dashboard() {
           <p>Triggered drift alerts.</p>
         </header>
         <div className="idw-panel-body">
-          {loading ? <TableSkeleton rows={3} /> :
-            alerts.length === 0 ? <EmptyState message="No alerts triggered" /> :
-              <ul className="idw-alert-list">
-                {alerts.map((a, i) => (
-                  <li key={i} className="idw-alert-item">
-                    <div className="idw-alert-header">
-                      <span className={`idw-pill ${
+          {loading ? (
+            <TableSkeleton rows={3} />
+          ) : alerts.length === 0 ? (
+            <EmptyState message="No alerts triggered" />
+          ) : (
+            <ul className="idw-alert-list">
+              {alerts.map((a, i) => (
+                <li key={i} className="idw-alert-item">
+                  <div className="idw-alert-header">
+                    <span
+                      className={`idw-pill ${
                         a.severity === "critical"
                           ? "idw-pill-bad"
                           : a.severity === "warning"
                           ? "idw-pill-warn"
                           : "idw-pill-ok"
-                      }`}>
-                        {a.severity}
-                      </span>
-                      <span>{a.timestamp}</span>
-                    </div>
-                    <p className="idw-alert-message">{a.message}</p>
-                  </li>
-                ))}
-              </ul>
-          }
+                      }`}
+                    >
+                      {a.severity}
+                    </span>
+                    <span>{a.timestamp}</span>
+                  </div>
+                  <p className="idw-alert-message">{a.message}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 
