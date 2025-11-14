@@ -2,12 +2,30 @@ name: Run Drift Pipeline Every 6 Hours
 
 on:
   schedule:
-    - cron: "0 */6 * * *"      # Runs every 6 hours
+    - cron: "0 0 * * *"      # Runs everyday - midnight UTC
   workflow_dispatch:            # Allow manual runs
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+
+    env:
+      REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+      REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+      REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+
+      X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+
+      SEMANTIC_DRIFT_THRESHOLD: ${{ secrets.SEMANTIC_DRIFT_THRESHOLD }}
+      CONCEPT_ACC_DROP_THRESHOLD: ${{ secrets.CONCEPT_ACC_DROP_THRESHOLD }}
+
+      MAIL_HOST: ${{ secrets.MAIL_HOST }}
+      MAIL_PORT: ${{ secrets.MAIL_PORT }}
+      MAIL_USE_TLS: ${{ secrets.MAIL_USE_TLS }}
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+      MAIL_FROM: ${{ secrets.MAIL_FROM }}
+      MAIL_TO: ${{ secrets.MAIL_TO }}
 
     steps:
       - name: Checkout repo
@@ -38,6 +56,6 @@ jobs:
           git config --global user.name "GitHub Actions"
 
           git add drift_reports/
-          git commit -m "Auto-update drift reports $(date)"
+          git commit -m "Auto-update drift reports $(date)" || echo "No changes to commit"
           git push
-        continue-on-error: true   # Avoid failure if no changes
+        continue-on-error: true
