@@ -3,7 +3,11 @@ import DriftCharts from "../components/DriftCharts";
 import TopicModal from "../components/TopicModal";
 
 const settings = JSON.parse(localStorage.getItem("idw-settings")) || {};
-const API_BASE = settings.apiBaseUrl || "https://intentdriftwatch.onrender.com";
+const API_BASE = settings.apiBaseUrl
+  ? settings.apiBaseUrl
+  : window.location.hostname.includes("github.io")
+  ? "https://intentdriftwatch.onrender.com"
+  : "http://127.0.0.1:8000";
 const REFRESH_MS = settings.refreshInterval || 30000;
 
 function Dashboard() {

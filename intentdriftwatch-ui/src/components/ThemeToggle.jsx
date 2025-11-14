@@ -1,16 +1,22 @@
+// src/components/ThemeToggle.jsx
 import { useTheme } from "../theme/useTheme";
 
-
-function ThemeToggle() {
+export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="idw-toggle-container" onClick={toggleTheme}>
-      <div className={`idw-toggle-slider ${theme === "dark" ? "active" : ""}`}>
-        <div className="idw-toggle-knob"></div>
-      </div>
-    </div>
+    <button
+      onClick={toggleTheme}
+      style={{
+        padding: "0.6rem 1rem",
+        borderRadius: "6px",
+        border: "1px solid #555",
+        background: "var(--card-bg)",
+        color: "var(--text-primary)",
+        cursor: "pointer",
+      }}
+    >
+      {theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"}
+    </button>
   );
 }
-
-export default ThemeToggle;
