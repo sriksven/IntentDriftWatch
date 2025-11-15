@@ -2,7 +2,7 @@ name: Run Drift Pipeline Every 6 Hours
 
 on:
   schedule:
-    - cron: 0 15 * * * # Runs everyday - 10 AM ESR
+    - cron: 0 15 * * * # Runs everyday - 10 AM EST
   workflow_dispatch:            # Allow manual runs
 
 jobs:

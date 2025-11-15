@@ -1,0 +1,10 @@
+{
+  "topic": "Space Exploration",
+  "source_cleaned_file": "Space_Exploration_cleaned_2025-11-15.json",
+  "timestamp": "2025-11-15 02:09:25.587084",
+  "num_texts": 131,
+  "embedding_shape": [
+    131,
+    384
+  ]
+}
