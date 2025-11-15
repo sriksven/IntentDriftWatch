@@ -1,15 +1,15 @@
 {
   "topic": "Space Exploration",
-  "timestamp": "2025-11-15 02:09:31.378151",
+  "timestamp": "2025-11-15 18:10:51.586165",
   "old_date": "2025-11-11",
   "new_date": "2025-11-15",
   "old_samples": 131,
   "new_samples": 131,
   "train_acc": 1.0,
-  "test_acc": 0.5443037974683544,
+  "test_acc": 0.5063291139240507,
   "train_f1": 1.0,
-  "test_f1": 0.5428375934705048,
-  "accuracy_drop": 0.4557,
+  "test_f1": 0.5047430227238066,
+  "accuracy_drop": 0.4937,
   "status": "Stable",
-  "interpretation": "Model can distinguish old/new with 54.4% accuracy"
+  "interpretation": "Model can distinguish old/new with 50.6% accuracy"
 }

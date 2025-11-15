@@ -1,13 +1,13 @@
 {
   "topic": "Space Exploration",
-  "timestamp": "2025-11-15 02:09:28.443591",
+  "timestamp": "2025-11-15 18:10:40.723834",
   "old_date": "2025-11-09",
   "new_date": "2025-11-11",
   "old_samples": 131,
   "new_samples": 131,
-  "cosine_drift": 0.07485689511942328,
+  "cosine_drift": 0.07485693693161011,
   "jsd_drift": 0.1347564458847046,
-  "drift_score": 0.1048,
+  "drift_score": 0.10480000078678131,
   "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-09/Space_Exploration.npy",
   "new_snapshot": "data_pipeline/data/processed/embeddings/2025-11-11/Space_Exploration.npy",
   "status": "Stable"

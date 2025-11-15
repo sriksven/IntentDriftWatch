@@ -1,13 +1,13 @@
 {
   "topic": "Artificial Intelligence",
-  "timestamp": "2025-11-15 02:09:28.737732",
+  "timestamp": "2025-11-15 18:10:40.966736",
   "old_date": "2025-11-11",
   "new_date": "2025-11-15",
   "old_samples": 131,
   "new_samples": 131,
-  "cosine_drift": 0.04154450477463234,
-  "jsd_drift": 0.13229799270629883,
-  "drift_score": 0.0869,
+  "cosine_drift": 0.0427781343460083,
+  "jsd_drift": 0.13236698508262634,
+  "drift_score": 0.08760000020265579,
   "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-11/Artificial_Intelligence.npy",
   "new_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Artificial_Intelligence.npy",
   "status": "Stable"
