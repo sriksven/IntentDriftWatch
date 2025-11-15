@@ -14,11 +14,18 @@ from glob import glob
 import mlflow
 
 # =========================================
+# Fix PYTHONPATH for GitHub Actions + local
+# =========================================
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
+# =========================================
 # LOGGING SETUP: portable cross-platform
 # =========================================
 
 # Repo root dynamically (works on macOS, Linux, GitHub Actions)
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = PROJECT_ROOT
 
 # Logs stored inside repo under monitoring/logs/
 LOG_DIR = os.path.join(ROOT_DIR, "monitoring", "logs")
@@ -63,7 +70,6 @@ except ImportError:
 
 from data_pipeline.utils.log_data_collection import log_collection_event
 
-
 # =========================================
 # CONFIG
 # =========================================
@@ -71,7 +77,6 @@ TOPICS = [
     "Artificial Intelligence", "Climate Change", "Space Exploration",
     "Cryptocurrency", "Electric Vehicles", "Elections"
 ]
-
 
 # =========================================
 # MAIN PIPELINE FUNCTION
