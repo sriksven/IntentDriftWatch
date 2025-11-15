@@ -1,4 +1,7 @@
-name: Run Drift Pipeline Every 6 Hours
+name: Run Drift Pipeline Every 24 Hours
+
+permissions:
+  contents: write
 
 on:
   schedule:
