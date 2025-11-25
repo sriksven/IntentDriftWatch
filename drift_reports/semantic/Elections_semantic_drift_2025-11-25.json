@@ -1,0 +1,14 @@
+{
+  "topic": "Elections",
+  "timestamp": "2025-11-25 15:18:34.453605",
+  "old_date": "2025-11-15",
+  "new_date": "2025-11-25",
+  "old_samples": 131,
+  "new_samples": 131,
+  "cosine_drift": 0.07801252603530884,
+  "jsd_drift": 0.13463720679283142,
+  "drift_score": 0.1062999963760376,
+  "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Elections.npy",
+  "new_snapshot": "data_pipeline/data/processed/embeddings/2025-11-25/Elections.npy",
+  "status": "Stable"
+}
