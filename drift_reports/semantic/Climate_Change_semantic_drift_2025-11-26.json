@@ -1,0 +1,14 @@
+{
+  "topic": "Climate Change",
+  "timestamp": "2025-11-26 15:16:08.961642",
+  "old_date": "2025-11-15",
+  "new_date": "2025-11-26",
+  "old_samples": 131,
+  "new_samples": 131,
+  "cosine_drift": 0.04320496320724487,
+  "jsd_drift": 0.13367575407028198,
+  "drift_score": 0.08839999884366989,
+  "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Climate_Change.npy",
+  "new_snapshot": "data_pipeline/data/processed/embeddings/2025-11-26/Climate_Change.npy",
+  "status": "Stable"
+}
