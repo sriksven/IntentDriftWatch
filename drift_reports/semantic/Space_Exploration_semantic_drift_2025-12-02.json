@@ -1,0 +1,14 @@
+{
+  "topic": "Space Exploration",
+  "timestamp": "2025-12-02 15:18:56.642540",
+  "old_date": "2025-11-15",
+  "new_date": "2025-12-02",
+  "old_samples": 131,
+  "new_samples": 131,
+  "cosine_drift": 0.05492269992828369,
+  "jsd_drift": 0.133360356092453,
+  "drift_score": 0.0940999984741211,
+  "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Space_Exploration.npy",
+  "new_snapshot": "data_pipeline/data/processed/embeddings/2025-12-02/Space_Exploration.npy",
+  "status": "Stable"
+}
