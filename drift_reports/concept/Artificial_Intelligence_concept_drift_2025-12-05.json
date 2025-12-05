@@ -1,0 +1,15 @@
+{
+  "topic": "Artificial Intelligence",
+  "timestamp": "2025-12-05 15:18:43.834894",
+  "old_date": "2025-11-15",
+  "new_date": "2025-12-05",
+  "old_samples": 131,
+  "new_samples": 131,
+  "train_acc": 1.0,
+  "test_acc": 0.6075949367088608,
+  "train_f1": 1.0,
+  "test_f1": 0.6072174426604806,
+  "accuracy_drop": 0.3924,
+  "status": "Moderate Drift",
+  "interpretation": "Model can distinguish old/new with 60.8% accuracy"
+}
