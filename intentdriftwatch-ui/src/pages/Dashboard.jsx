@@ -12,7 +12,7 @@ const REFRESH_MS = settings.refreshInterval || 30000;
 
 function Dashboard() {
   const [timeRange, setTimeRange] = useState("7d");
-  const [modelName, setModelName] = useState("default");
+  const [modelName] = useState("default");
   const [summaryDate, setSummaryDate] = useState("");
 
   const [loading, setLoading] = useState(true);
