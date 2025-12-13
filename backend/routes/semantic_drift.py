@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 import json
 from pathlib import Path
 
@@ -7,30 +7,40 @@ router = APIRouter()
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
-def load_latest_summary():
-    files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
-    if not files:
+def load_summary_by_date(date_str: str = None):
+    """
+    Load summary for a specific date, or latest if None.
+    Returns parsed JSON or None if not found.
+    """
+    if date_str:
+        target_file = SUMMARY_DIR / f"drift_summary_{date_str}.json"
+        if target_file.exists():
+            with open(target_file) as f:
+                return json.load(f)
         return None
-    with open(files[-1]) as f:
-        return json.load(f)
+    else:
+        # Load latest
+        files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
+        if not files:
+            return None
+        with open(files[-1]) as f:
+            return json.load(f)
 
 @router.get("/semantic_drift")
 def get_semantic_drift(
-    time_range: str = Query("7d", description="Time range (24h, 7d, 30d)"),
-    model: str = Query("default", description="Model name")
+    date: str = Query(None, description="Specific date YYYY-MM-DD")
 ):
-    # For now, we only support 'default' model
-    if model != "default":
-        # In a real system, we might query a different set of files
-        return {"items": []}
-
-    # Time range logic: 
-    # Currently we just load the latest summary. 
-    # In future, we could filter 'files' based on file timestamp vs time_range.
-    # For now, returning latest is consistent with '7d' or '30d' if it's recent.
-    data = load_latest_summary()
+    """
+    Get semantic drift table for a specific date (snapshot).
+    """
+    data = load_summary_by_date(date)
+    
     if not data:
-        return {"items": []}
+        # If a specific date was requested but not found, return empty list (or could 404)
+        if date:
+             return {"items": []} # Graceful handling for UI
+        else:
+             return {"items": []}
 
     rows = data.get("rows", [])
 
@@ -39,10 +49,10 @@ def get_semantic_drift(
         items.append({
             "topic": r.get("topic"),
             "drift_score": r.get("semantic_score"),
-            "delta_freq": None,         # Not part of your pipeline yet
+            "delta_freq": None,
             "cosine_drift": r.get("cosine_drift"),
             "jsd_drift": r.get("jsd_drift"),
-            "p_value": None             # Semantic drift does not produce p-values
+            "p_value": None
         })
 
     return {"items": items}

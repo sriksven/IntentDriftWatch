@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from pathlib import Path
 import json
 
@@ -8,19 +8,27 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
 @router.get("/alert_status")
-def get_alert_status():
+def get_alert_status(
+    date: str = Query(None, description="Specific date YYYY-MM-DD")
+):
     """
-    Returns alert-level status based on latest drift summary.
+    Returns alert-level status based on drift summary (latest or specific date).
     """
-    files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
-    if not files:
-        return {"status": "No data", "alerts": []}
+    if date:
+        target_file = SUMMARY_DIR / f"drift_summary_{date}.json"
+        if not target_file.exists():
+            return {"status": "No data", "alerts": []}
+        with open(target_file) as f:
+            data = json.load(f)
+    else:
+        files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
+        if not files:
+            return {"status": "No data", "alerts": []}
+        
+        latest_file = files[-1]
+        with open(latest_file) as f:
+            data = json.load(f)
 
-    latest_file = files[-1]
-    with open(latest_file) as f:
-        data = json.load(f)
-
-    alerts = []
     alerts = []
     for row in data.get("rows", []):
         sem_status = row.get("semantic_status")
@@ -44,6 +52,4 @@ def get_alert_status():
                 "message": f"Concept drift detected in '{row.get('topic')}': {con_status}"
             })
 
-    # Return list directly or wrapped? Frontend expects { alerts: [...] } based on Dashboard.jsx:
-    # setAlerts(alertsJson.alerts || alertsJson || []);
     return {"status": "Drift Detected" if alerts else "Stable", "alerts": alerts}

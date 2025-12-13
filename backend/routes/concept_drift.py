@@ -7,22 +7,25 @@ router = APIRouter()
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
-def load_latest_summary():
-    files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
-    if not files:
+def load_summary_by_date(date_str: str = None):
+    if date_str:
+        target_file = SUMMARY_DIR / f"drift_summary_{date_str}.json"
+        if target_file.exists():
+            with open(target_file) as f:
+                return json.load(f)
         return None
-    with open(files[-1]) as f:
-        return json.load(f)
+    else:
+        files = sorted(SUMMARY_DIR.glob("drift_summary_*.json"))
+        if not files:
+            return None
+        with open(files[-1]) as f:
+            return json.load(f)
 
 @router.get("/concept_drift")
 def get_concept_drift(
-    time_range: str = Query("7d", description="Time range (24h, 7d, 30d)"),
-    model: str = Query("default", description="Model name")
+    date: str = Query(None, description="Specific date YYYY-MM-DD")
 ):
-    if model != "default":
-        return {"items": []}
-
-    data = load_latest_summary()
+    data = load_summary_by_date(date)
     if not data:
         return {"items": []}
 
@@ -34,7 +37,7 @@ def get_concept_drift(
             "feature": r.get("topic"),
             "test_name": "accuracy_drop",
             "statistic": r.get("accuracy_drop"),
-            "p_value": None,                   # Not part of your concept drift pipeline
+            "p_value": None,
             "is_drifting": r.get("concept_status") not in ["Stable", "N/A"]
         })
 

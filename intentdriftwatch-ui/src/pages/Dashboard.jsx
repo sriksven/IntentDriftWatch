@@ -11,9 +11,10 @@ const API_BASE = settings.apiBaseUrl
 const REFRESH_MS = settings.refreshInterval || 30000;
 
 function Dashboard() {
-  const [timeRange, setTimeRange] = useState("7d");
-  const [modelName] = useState("default");
-  const [summaryDate, setSummaryDate] = useState("");
+  // Use selectedDate instead of timeRange/model
+  // Initialize with today's date or empty (which backend treats as latest)
+  // For better UX, we could fetch the latest available date, but empty is fine for now.
+  const [selectedDate, setSelectedDate] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState(null);
@@ -24,19 +25,17 @@ function Dashboard() {
   const [error, setError] = useState("");
 
   /* -------------------------------------------------- */
-  /*  LOAD DATA (memoized for ESLint)                   */
+  /*  LOAD DATA                                         */
   /* -------------------------------------------------- */
   const loadData = useCallback(async () => {
     setLoading(true);
     setError("");
 
     try {
-      const query = `?time_range=${encodeURIComponent(timeRange)}&model=${encodeURIComponent(
-        modelName
-      )}`;
+      const query = selectedDate ? `?date=${selectedDate}` : "";
 
       const [summaryRes, semRes, conceptRes, alertsRes] = await Promise.all([
-        fetch(`${API_BASE}/drift_summary`),
+        fetch(`${API_BASE}/drift_summary${query}`),
         fetch(`${API_BASE}/semantic_drift${query}`),
         fetch(`${API_BASE}/concept_drift${query}`),
         fetch(`${API_BASE}/alert_status${query}`)
@@ -48,7 +47,12 @@ function Dashboard() {
       const alertsJson = await alertsRes.json();
 
       setSummary(summaryJson);
-      setSummaryDate(summaryJson.date || "");
+      // If no date selected, sync UI with the date returned by backend
+      if (!selectedDate && summaryJson.date) {
+        // Don't set state loop, but maybe display it? 
+        // Actually, let's keep selectedDate as the CONTROL. 
+        // If empty, backend returns latest.
+      }
 
       setSemantic(semJson.items || semJson || []);
       setConcept(conceptJson.items || conceptJson || []);
@@ -60,18 +64,22 @@ function Dashboard() {
 
     setLoading(false);
 
-  }, [timeRange, modelName]);
+  }, [selectedDate]); // Re-run when date changes
 
   /* -------------------------------------------------- */
-  /*  SAFE AUTO REFRESH (no ESLint warnings)            */
+  /*  SAFE AUTO REFRESH                                 */
   /* -------------------------------------------------- */
   useEffect(() => {
     let active = true;
 
+    // Initial load
     requestAnimationFrame(() => {
       if (active) loadData();
     });
 
+    // Auto-refresh (only if viewing latest? or always?)
+    // If viewing history, auto-refresh might be annoying.
+    // Let's keep it for now.
     const interval = setInterval(() => {
       if (active) loadData();
     }, REFRESH_MS);
@@ -82,17 +90,6 @@ function Dashboard() {
     };
   }, [loadData]);
 
-  /* -------------------------------------------------- */
-  /*  DATE OVERRIDE                                      */
-  /* -------------------------------------------------- */
-  function handleDateOverride() {
-    if (!summaryDate) return;
-
-    fetch(`${API_BASE}/drift_summary?date=${summaryDate}`)
-      .then((r) => r.json())
-      .then((s) => setSummary(s))
-      .catch(() => setError("Failed to load summary for selected date."));
-  }
 
   return (
     <div className="idw-main">
@@ -108,31 +105,17 @@ function Dashboard() {
       <section className="idw-controls">
 
         <label className="idw-field">
-          <span>Time Range</span>
-          <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-            <option value="24h">24 hours</option>
-            <option value="7d">7 days</option>
-            <option value="30d">30 days</option>
-            <option value="1y">1 year</option>
-          </select>
-        </label>
-
-        <label className="idw-field">
-          <span>Model</span>
-          <select value={modelName} disabled title="Multi-model support coming soon">
-            <option value="default">Default Model</option>
-          </select>
-        </label>
-
-        <label className="idw-field">
-          <span>Date</span>
+          <span>Snapshot Date</span>
           <input
-            value={summaryDate}
-            onChange={(e) => setSummaryDate(e.target.value)}
-            onBlur={handleDateOverride}
-            placeholder="YYYY-MM-DD"
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="idw-input"
           />
+          {!selectedDate && <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "#666" }}>(Showing Latest)</span>}
         </label>
+
+        {/* Removed Model and TimeRange selectors */}
 
       </section>
 
@@ -143,10 +126,11 @@ function Dashboard() {
       {/* ----------------------------------------------- */}
       {summary && (
         <section className="idw-summary-row">
+          <StatCard label="Snapshot Date" value={summary.date || "N/A"} highlight />
           <StatCard label="Semantic Drift Score" value={fmt(summary.semantic_drift_score)} />
           <StatCard label="Concept Drift Score" value={fmt(summary.concept_drift_score)} />
           <StatCard label="Topics Monitored" value={summary.topic_count || 0} />
-          <StatCard label="Alerts" value={summary.alert_count || 0} highlight />
+          <StatCard label="Alerts" value={summary.alert_count || 0} />
         </section>
       )}
 

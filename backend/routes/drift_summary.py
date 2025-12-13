@@ -19,6 +19,9 @@ def load_summary_for_date(date: str = None):
         if target.exists():
             with open(target) as f:
                 return json.load(f)
+        else:
+            # Explicit date not found
+            return None
 
     # Fallback to latest
     with open(files[-1]) as f:
