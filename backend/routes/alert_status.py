@@ -21,20 +21,29 @@ def get_alert_status():
         data = json.load(f)
 
     alerts = []
+    alerts = []
     for row in data.get("rows", []):
-        if (
-            row.get("semantic_status") in ["Drift Detected", "Moderate Drift"]
-            or row.get("concept_status") in ["Drift Detected", "Moderate Drift"]
-        ):
+        sem_status = row.get("semantic_status")
+        con_status = row.get("concept_status")
+        
+        # Check Semantic Drift
+        if sem_status in ["Drift Detected", "Moderate Drift", "Significant Drift"]:
+            severity = "critical" if sem_status == "Significant Drift" else "warning"
             alerts.append({
-                "topic": row.get("topic"),
-                "semantic_status": row.get("semantic_status"),
-                "concept_status": row.get("concept_status"),
-                "semantic_score": row.get("semantic_score"),
-                "accuracy_drop": row.get("accuracy_drop")
+                "severity": severity,
+                "timestamp": data.get("date", "N/A"),
+                "message": f"Semantic drift detected in '{row.get('topic')}': {sem_status}"
             })
 
-    if alerts:
-        return {"status": "Drift Detected", "alerts": alerts}
-    else:
-        return {"status": "Stable", "alerts": []}
+        # Check Concept Drift
+        if con_status in ["Drift Detected", "Moderate Drift", "Significant Drift"]:
+            severity = "critical" if con_status == "Significant Drift" else "warning"
+            alerts.append({
+                "severity": severity,
+                "timestamp": data.get("date", "N/A"),
+                "message": f"Concept drift detected in '{row.get('topic')}': {con_status}"
+            })
+
+    # Return list directly or wrapped? Frontend expects { alerts: [...] } based on Dashboard.jsx:
+    # setAlerts(alertsJson.alerts || alertsJson || []);
+    return {"status": "Drift Detected" if alerts else "Stable", "alerts": alerts}

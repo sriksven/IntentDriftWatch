@@ -13,6 +13,7 @@ from backend.routes.topic_history import router as topic_history_router
 from backend.routes.embeddings import router as embeddings_router
 from backend.routes.embeddings_info import router as emb_info_router
 from backend.routes.embeddings_topic import router as emb_topic_router
+from backend.routes.drift_details import router as drift_details_router
 
 app = FastAPI(
     title="IntentDriftWatch API",
@@ -39,6 +40,7 @@ app.include_router(topic_history_router)
 app.include_router(embeddings_router)
 app.include_router(emb_info_router)
 app.include_router(emb_topic_router)
+app.include_router(drift_details_router)
 
 @app.get("/")
 def root():

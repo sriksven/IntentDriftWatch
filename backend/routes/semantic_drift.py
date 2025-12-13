@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 import json
 from pathlib import Path
 
@@ -15,7 +15,19 @@ def load_latest_summary():
         return json.load(f)
 
 @router.get("/semantic_drift")
-def get_semantic_drift():
+def get_semantic_drift(
+    time_range: str = Query("7d", description="Time range (24h, 7d, 30d)"),
+    model: str = Query("default", description="Model name")
+):
+    # For now, we only support 'default' model
+    if model != "default":
+        # In a real system, we might query a different set of files
+        return {"items": []}
+
+    # Time range logic: 
+    # Currently we just load the latest summary. 
+    # In future, we could filter 'files' based on file timestamp vs time_range.
+    # For now, returning latest is consistent with '7d' or '30d' if it's recent.
     data = load_latest_summary()
     if not data:
         return {"items": []}

@@ -6,8 +6,8 @@ const settings = JSON.parse(localStorage.getItem("idw-settings")) || {};
 const API_BASE = settings.apiBaseUrl
   ? settings.apiBaseUrl
   : window.location.hostname.includes("github.io")
-  ? "https://intentdriftwatch.onrender.com"
-  : "http://127.0.0.1:8000";
+    ? "https://intentdriftwatch.onrender.com"
+    : "http://127.0.0.1:8000";
 const REFRESH_MS = settings.refreshInterval || 30000;
 
 function Dashboard() {
@@ -113,12 +113,15 @@ function Dashboard() {
             <option value="24h">24 hours</option>
             <option value="7d">7 days</option>
             <option value="30d">30 days</option>
+            <option value="1y">1 year</option>
           </select>
         </label>
 
         <label className="idw-field">
           <span>Model</span>
-          <input value={modelName} onChange={(e) => setModelName(e.target.value)} />
+          <select value={modelName} disabled title="Multi-model support coming soon">
+            <option value="default">Default Model</option>
+          </select>
         </label>
 
         <label className="idw-field">
@@ -163,26 +166,7 @@ function Dashboard() {
           ) : semantic.length === 0 ? (
             <EmptyState message="No semantic drift detected" />
           ) : (
-            <table className="idw-table">
-              <thead>
-                <tr>
-                  <th>Topic</th>
-                  <th>Drift Score</th>
-                  <th>Delta Freq</th>
-                  <th>P Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {semantic.map((s, i) => (
-                  <tr key={i} onClick={() => setSelectedTopic(s.topic)}>
-                    <td>{s.topic}</td>
-                    <td>{fmt(s.drift_score)}</td>
-                    <td>{fmt(s.delta_freq)}</td>
-                    <td>{fmt(s.p_value, 4)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <SemanticTable items={semantic} setSelectedTopic={setSelectedTopic} />
           )}
         </div>
       </section>
@@ -228,10 +212,10 @@ function Dashboard() {
             </table>
           )}
         </div>
-      </section>
+      </section >
 
       {/* Alerts */}
-      <section className="idw-panel">
+      < section className="idw-panel" >
         <header className="idw-panel-header">
           <h3>Alerts</h3>
           <p>Triggered drift alerts.</p>
@@ -247,13 +231,12 @@ function Dashboard() {
                 <li key={i} className="idw-alert-item">
                   <div className="idw-alert-header">
                     <span
-                      className={`idw-pill ${
-                        a.severity === "critical"
-                          ? "idw-pill-bad"
-                          : a.severity === "warning"
+                      className={`idw-pill ${a.severity === "critical"
+                        ? "idw-pill-bad"
+                        : a.severity === "warning"
                           ? "idw-pill-warn"
                           : "idw-pill-ok"
-                      }`}
+                        }`}
                     >
                       {a.severity}
                     </span>
@@ -265,13 +248,14 @@ function Dashboard() {
             </ul>
           )}
         </div>
-      </section>
+      </section >
 
       {selectedTopic && (
         <TopicModal topic={selectedTopic} onClose={() => setSelectedTopic(null)} />
-      )}
+      )
+      }
 
-    </div>
+    </div >
   );
 }
 
@@ -296,6 +280,35 @@ function TableSkeleton({ rows }) {
         <div key={i} className="idw-skeleton-row" />
       ))}
     </div>
+  );
+}
+
+function SemanticTable({ items, setSelectedTopic }) {
+  // Check if we have any valid data for these columns
+  const showDelta = items.some((i) => i.delta_freq !== null && i.delta_freq !== undefined && i.delta_freq !== "N/A");
+  const showPVal = items.some((i) => i.p_value !== null && i.p_value !== undefined && i.p_value !== "N/A");
+
+  return (
+    <table className="idw-table">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Drift Score</th>
+          {showDelta && <th>Delta Freq</th>}
+          {showPVal && <th>P Value</th>}
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((s, i) => (
+          <tr key={i} onClick={() => setSelectedTopic(s.topic)}>
+            <td>{s.topic}</td>
+            <td>{fmt(s.drift_score)}</td>
+            {showDelta && <td>{fmt(s.delta_freq)}</td>}
+            {showPVal && <td>{fmt(s.p_value, 4)}</td>}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 

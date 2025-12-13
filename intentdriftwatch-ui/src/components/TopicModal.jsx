@@ -17,11 +17,33 @@ export default function TopicModal({ topic, onClose }) {
   const [conceptTS, setConceptTS] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [driftDetails, setDriftDetails] = useState(null);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+
+  const analyzeDrift = async (index) => {
+    if (index <= 0) return;
+    const current = semanticTS[index];
+    const prev = semanticTS[index - 1];
+
+    setDriftDetails(null);
+    setDetailsLoading(true);
+
+    try {
+      const url = `${API_BASE}/drift_details?topic=${encodeURIComponent(topic)}&old_date=${prev.date}&new_date=${current.date}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      setDriftDetails(json);
+    } catch (e) {
+      console.error("Drift details fetch failed:", e);
+    }
+    setDetailsLoading(false);
+  };
+
   useEffect(() => {
     async function loadHistory() {
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE}/topic_history/${encodeURIComponent(topic)}`);
+        const res = await fetch(`${API_BASE}/topic/${encodeURIComponent(topic)}/history`);
         const json = await res.json();
 
         setSemanticTS(json.semantic || []);
@@ -92,19 +114,29 @@ export default function TopicModal({ topic, onClose }) {
                       <th>JSD</th>
                       <th>Concept Acc</th>
                       <th>Accuracy Drop</th>
+                      <th>Context</th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    {semanticTS.map((s, i) => (
-                      <tr key={i}>
-                        <td>{s.date}</td>
-                        <td>{num(s.drift_score)}</td>
-                        <td>{num(s.cosine_drift)}</td>
-                        <td>{num(s.jsd_drift)}</td>
-                        <td>{conceptTS[i]?.test_acc ?? "—"}</td>
-                        <td>{conceptTS[i]?.accuracy_drop ?? "—"}</td>
-                      </tr>
+                    <tr>
+                      <td>{s.date}</td>
+                      <td>{num(s.drift_score)}</td>
+                      <td>{num(s.cosine_drift)}</td>
+                      <td>{num(s.jsd_drift)}</td>
+                      <td>{conceptTS[i]?.test_acc ?? "—"}</td>
+                      <td>{conceptTS[i]?.accuracy_drop ?? "—"}</td>
+                      <td>
+                        {i > 0 && (
+                          <button
+                            className="idw-btn-xs"
+                            onClick={() => analyzeDrift(i)}
+                          >
+                            Analyze
+                          </button>
+                        )}
+                      </td>
+                    </tr>
                     ))}
                   </tbody>
                 </table>
@@ -112,6 +144,55 @@ export default function TopicModal({ topic, onClose }) {
             </div>
           </>
         )}
+
+        {detailsLoading && <div className="idw-panel">Loading analysis...</div>}
+
+        {driftDetails && (
+          <div className="idw-panel" style={{ marginTop: "1rem", borderTop: "1px solid #eee" }}>
+            <h4 style={{ marginBottom: "1rem" }}>
+              Word Drift: {driftDetails.period}
+            </h4>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+              <div>
+                <h5 style={{ color: "#059669", marginBottom: "0.5rem" }}>Trending Up ↗</h5>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                  {driftDetails.rising.map((w, i) => (
+                    <span key={i} className="idw-tag-green" title={`Score: ${w.score.toFixed(4)}`}>
+                      {w.word}
+                    </span>
+                  ))}
+                  {driftDetails.rising.length === 0 && <span style={{ color: "#999", fontSize: "0.9em" }}>No significant changes</span>}
+                </div>
+              </div>
+              <div>
+                <h5 style={{ color: "#dc2626", marginBottom: "0.5rem" }}>Trending Down ↘</h5>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                  {driftDetails.falling.map((w, i) => (
+                    <span key={i} className="idw-tag-red" title={`Score: ${w.score.toFixed(4)}`}>
+                      {w.word}
+                    </span>
+                  ))}
+                  {driftDetails.falling.length === 0 && <span style={{ color: "#999", fontSize: "0.9em" }}>No significant changes</span>}
+                </div>
+              </div>
+            </div>
+
+            {driftDetails.snippets.length > 0 && (
+              <div>
+                <h5 style={{ marginBottom: "0.5rem" }}>Context Snippets (New)</h5>
+                <ul style={{ paddingLeft: "1.2rem", fontSize: "0.9rem", color: "#555" }}>
+                  {driftDetails.snippets.map((s, i) => (
+                    <li key={i} style={{ marginBottom: "0.5rem" }}>
+                      "{s.text}" <span style={{ color: "#059669", fontWeight: "bold" }}>[{s.keyword}]</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </div>
   );

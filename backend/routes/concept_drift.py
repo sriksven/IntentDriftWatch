@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 import json
 from pathlib import Path
 
@@ -15,7 +15,13 @@ def load_latest_summary():
         return json.load(f)
 
 @router.get("/concept_drift")
-def get_concept_drift():
+def get_concept_drift(
+    time_range: str = Query("7d", description="Time range (24h, 7d, 30d)"),
+    model: str = Query("default", description="Model name")
+):
+    if model != "default":
+        return {"items": []}
+
     data = load_latest_summary()
     if not data:
         return {"items": []}
