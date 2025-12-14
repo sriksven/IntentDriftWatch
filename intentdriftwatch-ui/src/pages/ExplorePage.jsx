@@ -69,9 +69,8 @@ function ExplorePage() {
             topics.map((topic, idx) => (
               <div
                 key={idx}
-                className={`idw-explore-card ${
-                  selectedTopic === topic ? "active" : ""
-                }`}
+                className={`idw-explore-card ${selectedTopic === topic ? "active" : ""
+                  }`}
                 onClick={() => loadTopicDetails(topic)}
               >
                 <h3>{topic}</h3>
@@ -117,7 +116,7 @@ function ExplorePage() {
                         <td>
                           {/* Semantic Report */}
                           <a
-                            href={`${BASE}drift_reports/semantic/${topicKey}_semantic_drift_${row.date}.html`}
+                            href={`${API_BASE}/drift_reports/visual/${topicKey}_semantic_drift_${row.date}.html`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="idw-link"
@@ -129,7 +128,7 @@ function ExplorePage() {
 
                           {/* Concept Report */}
                           <a
-                            href={`${BASE}drift_reports/concept/${topicKey}_concept_drift_${row.date}.html`}
+                            href={`${API_BASE}/drift_reports/visual/${topicKey}_concept_drift_${row.date}.html`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="idw-link"

@@ -42,6 +42,20 @@ app.include_router(emb_info_router)
 app.include_router(emb_topic_router)
 app.include_router(drift_details_router)
 
+from fastapi.staticfiles import StaticFiles
+import os
+
+# Mount static reports
+# backend/app.py -> backend/ -> drift_reports/ is at parent sibling
+# Correct path resolution:
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPORT_DIR = os.path.join(BASE_DIR, "drift_reports")
+
+if os.path.exists(REPORT_DIR):
+    app.mount("/drift_reports", StaticFiles(directory=REPORT_DIR), name="drift_reports")
+else:
+    print(f"Warning: Report directory not found at {REPORT_DIR}")
+
 @app.get("/")
 def root():
     return {"message": "IntentDriftWatch backend is live", "version": "2.0"}
