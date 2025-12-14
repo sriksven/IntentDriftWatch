@@ -30,12 +30,13 @@ function Dashboard() {
     setError("");
 
     try {
+      const timestamp = new Date().getTime();
       // Logic: Date takes precedence. If date is empty, use timeRange.
       let query = "";
       if (selectedDate) {
-        query = `?date=${selectedDate}`;
+        query = `?date=${selectedDate}&_t=${timestamp}`;
       } else {
-        query = `?time_range=${encodeURIComponent(timeRange)}`;
+        query = `?time_range=${encodeURIComponent(timeRange)}&_t=${timestamp}`;
       }
 
       const [summaryRes, semRes, conceptRes, alertsRes] = await Promise.all([
