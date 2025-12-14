@@ -56,6 +56,17 @@ if os.path.exists(REPORT_DIR):
 else:
     print(f"Warning: Report directory not found at {REPORT_DIR}")
 
+@app.get("/debug_files")
+def debug_files():
+    import glob
+    return {
+        "cwd": os.getcwd(),
+        "base_dir": BASE_DIR,
+        "report_dir": REPORT_DIR,
+        "report_dir_exists": os.path.exists(REPORT_DIR),
+        "reports_content": glob.glob(os.path.join(REPORT_DIR, "visual", "*"))[:5] if os.path.exists(REPORT_DIR) else []
+    }
+
 @app.get("/")
 def root():
     return {"message": "IntentDriftWatch backend is live", "version": "2.0"}
