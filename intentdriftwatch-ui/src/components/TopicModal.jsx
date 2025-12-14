@@ -174,46 +174,62 @@ export default function TopicModal({ topic, onClose }) {
                           </span>
                         </div>
 
-                        <div className="idw-narrative-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "1rem", alignItems: "center" }}>
 
-                          {/* Old Context */}
-                          <div className="idw-context-box" style={{ background: "white", padding: "1rem", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
-                            <div style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.5rem", fontWeight: "bold" }}>
-                              It used to mean / appear in:
+                        {item.llm_explanation && (
+                          <div style={{ marginBottom: "1rem", padding: "1rem", background: "#eff6ff", borderRadius: "8px", borderLeft: "4px solid #3b82f6", color: "#1e3a8a" }}>
+                            <div style={{ fontWeight: "bold", marginBottom: "0.25rem", textTransform: "uppercase", fontSize: "0.75rem", letterSpacing: "0.05em", color: "#3b82f6" }}>
+                              AI Summary
                             </div>
-                            {item.context_old.length > 0 ? (
-                              <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.95rem", color: "#374151" }}>
-                                {item.context_old.map((s, idx) => (
-                                  <li key={idx} style={{ marginBottom: "0.4rem" }}>"{s}"</li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p style={{ fontStyle: "italic", color: "#9ca3af" }}>Rarely used in this context previously.</p>
-                            )}
+                            {item.llm_explanation}
                           </div>
+                        )}
 
-                          {/* Arrow */}
-                          <div style={{ fontSize: "2rem", color: "#9ca3af", textAlign: "center" }}>
-                            ➝
-                          </div>
+                        <details>
+                          <summary style={{ cursor: "pointer", color: "#6b7280", marginBottom: "1rem", fontSize: "0.9rem", userSelect: "none" }}>
+                            View Raw Context Snippets (Evidence)
+                          </summary>
 
-                          {/* New Context */}
-                          <div className="idw-context-box" style={{ background: "white", padding: "1rem", borderRadius: "8px", border: "1px solid #e5e7eb", borderColor: "#f472b6" }}>
-                            <div style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#db2777", marginBottom: "0.5rem", fontWeight: "bold" }}>
-                              Now it refers to / appears in:
+                          <div className="idw-narrative-grid" style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "1rem", alignItems: "center" }}>
+
+                            {/* Old Context */}
+                            <div className="idw-context-box" style={{ background: "white", padding: "1rem", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
+                              <div style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.5rem", fontWeight: "bold" }}>
+                                Used to mean:
+                              </div>
+                              {item.context_old.length > 0 ? (
+                                <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.95rem", color: "#374151" }}>
+                                  {item.context_old.map((s, idx) => (
+                                    <li key={idx} style={{ marginBottom: "0.4rem" }}>"{s}"</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p style={{ fontStyle: "italic", color: "#9ca3af" }}>Rarely used in this context previously.</p>
+                              )}
                             </div>
-                            {item.context_new.length > 0 ? (
-                              <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.95rem", color: "#374151" }}>
-                                {item.context_new.map((s, idx) => (
-                                  <li key={idx} style={{ marginBottom: "0.4rem" }}>"{s}"</li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p style={{ fontStyle: "italic", color: "#9ca3af" }}>Usage has faded in current context.</p>
-                            )}
-                          </div>
 
-                        </div>
+                            {/* Arrow */}
+                            <div style={{ fontSize: "2rem", color: "#9ca3af", textAlign: "center" }}>
+                              ➝
+                            </div>
+
+                            {/* New Context */}
+                            <div className="idw-context-box" style={{ background: "white", padding: "1rem", borderRadius: "8px", border: "1px solid #e5e7eb", borderColor: "#f472b6" }}>
+                              <div style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#db2777", marginBottom: "0.5rem", fontWeight: "bold" }}>
+                                Now refers to:
+                              </div>
+                              {item.context_new.length > 0 ? (
+                                <ul style={{ paddingLeft: "1.2rem", margin: 0, fontSize: "0.95rem", color: "#374151" }}>
+                                  {item.context_new.map((s, idx) => (
+                                    <li key={idx} style={{ marginBottom: "0.4rem" }}>"{s}"</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <p style={{ fontStyle: "italic", color: "#9ca3af" }}>Usage has faded in current context.</p>
+                              )}
+                            </div>
+
+                          </div>
+                        </details>
                       </div>
                     ))}
                   </div>
