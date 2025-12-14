@@ -10,7 +10,11 @@ import {
 } from "recharts";
 
 const settings = JSON.parse(localStorage.getItem("idw-settings")) || {};
-const API_BASE = settings.apiBaseUrl || "http://127.0.0.1:8000";
+const API_BASE = settings.apiBaseUrl
+  ? settings.apiBaseUrl
+  : window.location.hostname.includes("github.io")
+    ? "https://intentdriftwatch.onrender.com"
+    : "http://127.0.0.1:8000";
 
 export default function TopicModal({ topic, onClose }) {
   const [semanticTS, setSemanticTS] = useState([]);
