@@ -29,7 +29,10 @@ def load_summary_for_date(date: str = None):
 
 
 @router.get("/drift_summary")
-def get_drift_summary(date: str = Query(None, description="YYYY-MM-DD")):
+def get_drift_summary(
+    date: str = Query(None, description="YYYY-MM-DD"),
+    time_range: str = Query("7d", description="Time range (24h, 7d, 30d)")
+):
     """
     Returns summary for specific date or latest.
     """

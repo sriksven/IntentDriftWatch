@@ -11,9 +11,7 @@ const API_BASE = settings.apiBaseUrl
 const REFRESH_MS = settings.refreshInterval || 30000;
 
 function Dashboard() {
-  // Use selectedDate instead of timeRange/model
-  // Initialize with today's date or empty (which backend treats as latest)
-  // For better UX, we could fetch the latest available date, but empty is fine for now.
+  const [timeRange, setTimeRange] = useState("7d");
   const [selectedDate, setSelectedDate] = useState("");
 
   const [loading, setLoading] = useState(true);
@@ -32,7 +30,13 @@ function Dashboard() {
     setError("");
 
     try {
-      const query = selectedDate ? `?date=${selectedDate}` : "";
+      // Logic: Date takes precedence. If date is empty, use timeRange.
+      let query = "";
+      if (selectedDate) {
+        query = `?date=${selectedDate}`;
+      } else {
+        query = `?time_range=${encodeURIComponent(timeRange)}`;
+      }
 
       const [summaryRes, semRes, conceptRes, alertsRes] = await Promise.all([
         fetch(`${API_BASE}/drift_summary${query}`),
@@ -47,12 +51,6 @@ function Dashboard() {
       const alertsJson = await alertsRes.json();
 
       setSummary(summaryJson);
-      // If no date selected, sync UI with the date returned by backend
-      if (!selectedDate && summaryJson.date) {
-        // Don't set state loop, but maybe display it? 
-        // Actually, let's keep selectedDate as the CONTROL. 
-        // If empty, backend returns latest.
-      }
 
       setSemantic(semJson.items || semJson || []);
       setConcept(conceptJson.items || conceptJson || []);
@@ -64,22 +62,16 @@ function Dashboard() {
 
     setLoading(false);
 
-  }, [selectedDate]); // Re-run when date changes
+  }, [selectedDate, timeRange]);
 
   /* -------------------------------------------------- */
   /*  SAFE AUTO REFRESH                                 */
   /* -------------------------------------------------- */
   useEffect(() => {
     let active = true;
-
-    // Initial load
     requestAnimationFrame(() => {
       if (active) loadData();
     });
-
-    // Auto-refresh (only if viewing latest? or always?)
-    // If viewing history, auto-refresh might be annoying.
-    // Let's keep it for now.
     const interval = setInterval(() => {
       if (active) loadData();
     }, REFRESH_MS);
@@ -90,6 +82,9 @@ function Dashboard() {
     };
   }, [loadData]);
 
+
+  // Helper to check if summary is valid (not an error object)
+  const isValidSummary = summary && !summary.detail;
 
   return (
     <div className="idw-main">
@@ -102,20 +97,52 @@ function Dashboard() {
       {/* ----------------------------------------------- */}
       {/* Controls                                         */}
       {/* ----------------------------------------------- */}
-      <section className="idw-controls">
+      <section className="idw-controls" style={{ flexWrap: "wrap", gap: "1.5rem" }}>
 
+        {/* Date Picker (Primary Control) */}
         <label className="idw-field">
           <span>Snapshot Date</span>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="idw-input"
-          />
-          {!selectedDate && <span style={{ marginLeft: "0.5rem", fontSize: "0.8rem", color: "#666" }}>(Showing Latest)</span>}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="idw-input"
+            />
+            {selectedDate && (
+              <button
+                className="idw-btn-xs"
+                onClick={() => setSelectedDate("")}
+                title="Clear date to use time range"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </label>
 
-        {/* Removed Model and TimeRange selectors */}
+        {/* Time Range Selector (Only active if no date selected) */}
+        <label className={`idw-field ${selectedDate ? "idw-disabled" : ""}`}>
+          <span>Time Range</span>
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+            disabled={!!selectedDate}
+            title={selectedDate ? "Clear date to use time range" : "Select time window"}
+          >
+            <option value="24h">24 hours</option>
+            <option value="7d">7 days</option>
+            <option value="30d">30 days</option>
+            <option value="1y">1 year</option>
+          </select>
+        </label>
+
+        {/* Showing Label */}
+        <div style={{ alignSelf: "flex-end", paddingBottom: "0.5rem", fontSize: "0.9rem", color: "#666" }}>
+          {selectedDate
+            ? (isValidSummary ? `Showing snapshot: ${summary.date}` : "No data for this date")
+            : "Showing latest available data"}
+        </div>
 
       </section>
 
@@ -124,115 +151,134 @@ function Dashboard() {
       {/* ----------------------------------------------- */}
       {/* Summary Cards                                    */}
       {/* ----------------------------------------------- */}
-      {summary && (
-        <section className="idw-summary-row">
-          <StatCard label="Snapshot Date" value={summary.date || "N/A"} highlight />
-          <StatCard label="Semantic Drift Score" value={fmt(summary.semantic_drift_score)} />
-          <StatCard label="Concept Drift Score" value={fmt(summary.concept_drift_score)} />
-          <StatCard label="Topics Monitored" value={summary.topic_count || 0} />
-          <StatCard label="Alerts" value={summary.alert_count || 0} />
-        </section>
+
+      {/* Case 1: Error / No Data for Date */}
+      {!isValidSummary && selectedDate && (
+        <div className="idw-panel" style={{ padding: "2rem", textAlign: "center", color: "#666" }}>
+          <h4>No Data Found</h4>
+          <p>There is no drift report available for {selectedDate}.</p>
+          <button
+            className="idw-btn"
+            style={{ marginTop: "1rem" }}
+            onClick={() => setSelectedDate("")}
+          >
+            View Latest
+          </button>
+        </div>
       )}
 
-      {/* Charts */}
-      <DriftCharts semantic={semantic} concept={concept} />
+      {/* Case 2: Valid Data */}
+      {isValidSummary && (
+        <>
+          <section className="idw-summary-row">
+            <StatCard label="Snapshot Date" value={summary.date || "N/A"} highlight />
+            <StatCard label="Semantic Drift Score" value={fmt(summary.semantic_drift_score)} />
+            <StatCard label="Concept Drift Score" value={fmt(summary.concept_drift_score)} />
+            <StatCard label="Topics Monitored" value={summary.topic_count || 0} />
+            <StatCard label="Alerts" value={summary.alert_count || 0} />
+          </section>
 
-      {/* Semantic Table */}
-      <section className="idw-panel">
-        <header className="idw-panel-header">
-          <h3>Semantic Drift</h3>
-          <p>Embedding drift per topic.</p>
-        </header>
+          {/* Charts */}
+          <DriftCharts semantic={semantic} concept={concept} />
 
-        <div className="idw-panel-body">
-          {loading ? (
-            <TableSkeleton rows={4} />
-          ) : semantic.length === 0 ? (
-            <EmptyState message="No semantic drift detected" />
-          ) : (
-            <SemanticTable items={semantic} setSelectedTopic={setSelectedTopic} />
-          )}
-        </div>
-      </section>
+          {/* Semantic Table */}
+          <section className="idw-panel">
+            <header className="idw-panel-header">
+              <h3>Semantic Drift</h3>
+              <p>Embedding drift per topic.</p>
+            </header>
 
-      {/* Concept Drift */}
-      <section className="idw-panel">
-        <header className="idw-panel-header">
-          <h3>Concept Drift</h3>
-          <p>Distribution drift across labels or features.</p>
-        </header>
+            <div className="idw-panel-body">
+              {loading ? (
+                <TableSkeleton rows={4} />
+              ) : semantic.length === 0 ? (
+                <EmptyState message="No semantic drift detected" />
+              ) : (
+                <SemanticTable items={semantic} setSelectedTopic={setSelectedTopic} />
+              )}
+            </div>
+          </section>
 
-        <div className="idw-panel-body">
-          {loading ? (
-            <TableSkeleton rows={4} />
-          ) : concept.length === 0 ? (
-            <EmptyState message="No concept drift detected" />
-          ) : (
-            <table className="idw-table">
-              <thead>
-                <tr>
-                  <th>Feature</th>
-                  <th>Test</th>
-                  <th>Statistic</th>
-                  <th>P Value</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {concept.map((c, i) => (
-                  <tr key={i} onClick={() => setSelectedTopic(c.feature || c.label)}>
-                    <td>{c.feature || c.label}</td>
-                    <td>{c.test_name}</td>
-                    <td>{fmt(c.statistic)}</td>
-                    <td>{fmt(c.p_value, 4)}</td>
-                    <td>
-                      <span className={c.is_drifting ? "idw-pill idw-pill-bad" : "idw-pill idw-pill-ok"}>
-                        {c.is_drifting ? "Drifting" : "Stable"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </section >
+          {/* Concept Drift */}
+          <section className="idw-panel">
+            <header className="idw-panel-header">
+              <h3>Concept Drift</h3>
+              <p>Distribution drift across labels or features.</p>
+            </header>
 
-      {/* Alerts */}
-      < section className="idw-panel" >
-        <header className="idw-panel-header">
-          <h3>Alerts</h3>
-          <p>Triggered drift alerts.</p>
-        </header>
-        <div className="idw-panel-body">
-          {loading ? (
-            <TableSkeleton rows={3} />
-          ) : alerts.length === 0 ? (
-            <EmptyState message="No alerts triggered" />
-          ) : (
-            <ul className="idw-alert-list">
-              {alerts.map((a, i) => (
-                <li key={i} className="idw-alert-item">
-                  <div className="idw-alert-header">
-                    <span
-                      className={`idw-pill ${a.severity === "critical"
-                        ? "idw-pill-bad"
-                        : a.severity === "warning"
-                          ? "idw-pill-warn"
-                          : "idw-pill-ok"
-                        }`}
-                    >
-                      {a.severity}
-                    </span>
-                    <span>{a.timestamp}</span>
-                  </div>
-                  <p className="idw-alert-message">{a.message}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </section >
+            <div className="idw-panel-body">
+              {loading ? (
+                <TableSkeleton rows={4} />
+              ) : concept.length === 0 ? (
+                <EmptyState message="No concept drift detected" />
+              ) : (
+                <table className="idw-table">
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      <th>Test</th>
+                      <th>Statistic</th>
+                      <th>P Value</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {concept.map((c, i) => (
+                      <tr key={i} onClick={() => setSelectedTopic(c.feature || c.label)}>
+                        <td>{c.feature || c.label}</td>
+                        <td>{c.test_name}</td>
+                        <td>{fmt(c.statistic)}</td>
+                        <td>{fmt(c.p_value, 4)}</td>
+                        <td>
+                          <span className={c.is_drifting ? "idw-pill idw-pill-bad" : "idw-pill idw-pill-ok"}>
+                            {c.is_drifting ? "Drifting" : "Stable"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </section >
+
+          {/* Alerts */}
+          < section className="idw-panel" >
+            <header className="idw-panel-header">
+              <h3>Alerts</h3>
+              <p>Triggered drift alerts.</p>
+            </header>
+            <div className="idw-panel-body">
+              {loading ? (
+                <TableSkeleton rows={3} />
+              ) : alerts.length === 0 ? (
+                <EmptyState message="No alerts triggered" />
+              ) : (
+                <ul className="idw-alert-list">
+                  {alerts.map((a, i) => (
+                    <li key={i} className="idw-alert-item">
+                      <div className="idw-alert-header">
+                        <span
+                          className={`idw-pill ${a.severity === "critical"
+                            ? "idw-pill-bad"
+                            : a.severity === "warning"
+                              ? "idw-pill-warn"
+                              : "idw-pill-ok"
+                            }`}
+                        >
+                          {a.severity}
+                        </span>
+                        <span>{a.timestamp}</span>
+                      </div>
+                      <p className="idw-alert-message">{a.message}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </section >
+        </>
+      )}
 
       {selectedTopic && (
         <TopicModal topic={selectedTopic} onClose={() => setSelectedTopic(null)} />

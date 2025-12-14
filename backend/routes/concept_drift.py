@@ -23,7 +23,8 @@ def load_summary_by_date(date_str: str = None):
 
 @router.get("/concept_drift")
 def get_concept_drift(
-    date: str = Query(None, description="Specific date YYYY-MM-DD")
+    date: str = Query(None, description="Specific date YYYY-MM-DD"),
+    time_range: str = Query("7d", description="Time range (24h, 7d, 30d)")
 ):
     data = load_summary_by_date(date)
     if not data:

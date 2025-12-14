@@ -9,7 +9,8 @@ SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
 @router.get("/alert_status")
 def get_alert_status(
-    date: str = Query(None, description="Specific date YYYY-MM-DD")
+    date: str = Query(None, description="Specific date YYYY-MM-DD"),
+    time_range: str = Query("7d", description="Time range (24h, 7d, 30d)")
 ):
     """
     Returns alert-level status based on drift summary (latest or specific date).
