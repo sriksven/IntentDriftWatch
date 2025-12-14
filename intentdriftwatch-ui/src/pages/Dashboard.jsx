@@ -19,6 +19,12 @@ function Dashboard() {
   const [timeSeriesData, setTimeSeriesData] = useState([]);
   const [contextShift, setContextShift] = useState(null);
 
+  const [semantic, setSemantic] = useState([]);
+  const [concept, setConcept] = useState([]);
+  const [alerts, setAlerts] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [error, setError] = useState("");
+
   /* -------------------------------------------------- */
   /*  LOAD DATA                                         */
   /* -------------------------------------------------- */

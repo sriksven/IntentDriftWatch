@@ -7,10 +7,7 @@ on:
   schedule:
     - cron: 0 15 * * * # Runs everyday - 10 AM EST
   workflow_dispatch:            # Allow manual runs
-  push:                         # Run on push to main
-    branches:
-      - main
-      - master
+
 
 jobs:
   run-pipeline:
