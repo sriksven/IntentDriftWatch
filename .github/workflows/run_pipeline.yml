@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: 0 15 * * * # Runs everyday - 10 AM EST
   workflow_dispatch:            # Allow manual runs
+  push:                         # Run on push to main
+    branches:
+      - main
+      - master
 
 jobs:
   run-pipeline:
@@ -70,6 +74,7 @@ jobs:
           git config --global user.name "GitHub Actions"
 
           git add drift_reports/
+          git add data_pipeline/data/processed/cleaned/
           git commit -m "Auto-update drift reports $(date)" || echo "No changes to commit"
-          git push
-        continue-on-error: true
+          git push origin HEAD:main
+

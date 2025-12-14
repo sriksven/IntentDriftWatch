@@ -8,3 +8,6 @@ data/metadata/
 mlflow/
 monitoring/logs/
 mlruns/
+
+# Allow cleaned text data for drift explanation
+!data_pipeline/data/processed/cleaned/*.json

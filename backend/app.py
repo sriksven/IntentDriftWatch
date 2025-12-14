@@ -14,6 +14,7 @@ from backend.routes.embeddings import router as embeddings_router
 from backend.routes.embeddings_info import router as emb_info_router
 from backend.routes.embeddings_topic import router as emb_topic_router
 from backend.routes.drift_details import router as drift_details_router
+from backend.routes.global_analytics import router as global_analytics_router
 
 app = FastAPI(
     title="IntentDriftWatch API",
@@ -41,6 +42,7 @@ app.include_router(embeddings_router)
 app.include_router(emb_info_router)
 app.include_router(emb_topic_router)
 app.include_router(drift_details_router)
+app.include_router(global_analytics_router)
 
 from fastapi.staticfiles import StaticFiles
 import os

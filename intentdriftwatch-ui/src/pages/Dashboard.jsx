@@ -16,11 +16,8 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState(null);
-  const [semantic, setSemantic] = useState([]);
-  const [concept, setConcept] = useState([]);
-  const [alerts, setAlerts] = useState([]);
-  const [selectedTopic, setSelectedTopic] = useState(null);
-  const [error, setError] = useState("");
+  const [timeSeriesData, setTimeSeriesData] = useState([]);
+  const [contextShift, setContextShift] = useState(null);
 
   /* -------------------------------------------------- */
   /*  LOAD DATA                                         */
@@ -31,34 +28,59 @@ function Dashboard() {
 
     try {
       const timestamp = new Date().getTime();
-      // Logic: Date takes precedence. If date is empty, use timeRange.
       let query = "";
+
+      // Feature 1: Snapshot View (Specific Date)
       if (selectedDate) {
         query = `?date=${selectedDate}&_t=${timestamp}`;
-      } else {
+        setTimeSeriesData([]); // Clear time series in snapshot mode
+        setContextShift(null);
+
+        const [summaryRes, semRes, conceptRes, alertsRes] = await Promise.all([
+          fetch(`${API_BASE}/drift_summary${query}`),
+          fetch(`${API_BASE}/semantic_drift${query}`),
+          fetch(`${API_BASE}/concept_drift${query}`),
+          fetch(`${API_BASE}/alert_status${query}`)
+        ]);
+
+        const summaryJson = await summaryRes.json();
+        const semJson = await semRes.json();
+        const conceptJson = await conceptRes.json();
+        const alertsJson = await alertsRes.json();
+
+        setSummary(summaryJson);
+        setSemantic(semJson.items || semJson || []);
+        setConcept(conceptJson.items || conceptJson || []);
+        setAlerts(alertsJson.alerts || alertsJson || []);
+      }
+      // Feature 2: Time Series View (Global Trend)
+      else {
         query = `?time_range=${encodeURIComponent(timeRange)}&_t=${timestamp}`;
+
+        // Fetch Trend & Top Shift
+        const [trendRes, shiftRes, alertsRes] = await Promise.all([
+          fetch(`${API_BASE}/analytics/global_trend${query}`),
+          fetch(`${API_BASE}/analytics/top_shift${query}`),
+          fetch(`${API_BASE}/alert_status${query}`) // Still show latest alerts? Or range alerts? Backend alert_status handles time_range
+        ]);
+
+        const trendJson = await trendRes.json();
+        const shiftJson = await shiftRes.json();
+        const alertsJson = await alertsRes.json();
+
+        setTimeSeriesData(trendJson.trend || []);
+        setContextShift(shiftJson.word_context ? shiftJson : null);
+        setAlerts(alertsJson.alerts || alertsJson || []);
+
+        // Clear snapshot specific data to avoid confusion
+        setSummary(null);
+        setSemantic([]);
+        setConcept([]);
       }
 
-      const [summaryRes, semRes, conceptRes, alertsRes] = await Promise.all([
-        fetch(`${API_BASE}/drift_summary${query}`),
-        fetch(`${API_BASE}/semantic_drift${query}`),
-        fetch(`${API_BASE}/concept_drift${query}`),
-        fetch(`${API_BASE}/alert_status${query}`)
-      ]);
-
-      const summaryJson = await summaryRes.json();
-      const semJson = await semRes.json();
-      const conceptJson = await conceptRes.json();
-      const alertsJson = await alertsRes.json();
-
-      setSummary(summaryJson);
-
-      setSemantic(semJson.items || semJson || []);
-      setConcept(conceptJson.items || conceptJson || []);
-      setAlerts(alertsJson.alerts || alertsJson || []);
-
-    } catch {
-      setError("Failed to load dashboard data. Check backend.");
+    } catch (e) {
+      console.error(e);
+      setError("Failed to load analytics. Check backend.");
     }
 
     setLoading(false);
@@ -73,26 +95,28 @@ function Dashboard() {
     requestAnimationFrame(() => {
       if (active) loadData();
     });
+    // Refresh less frequently for global analytics
     const interval = setInterval(() => {
       if (active) loadData();
-    }, REFRESH_MS);
+    }, selectedDate ? REFRESH_MS : 60000);
 
     return () => {
       active = false;
       clearInterval(interval);
     };
-  }, [loadData]);
+  }, [loadData, selectedDate]);
 
-
-  // Helper to check if summary is valid (not an error object)
-  const isValidSummary = summary && !summary.detail;
+  // Helper to check if summary is valid
+  const isSnapshotMode = !!selectedDate;
 
   return (
     <div className="idw-main">
 
       <header className="idw-header-block">
         <h1 className="idw-page-title">Dashboard</h1>
-        <p className="idw-page-subtitle">Live monitoring of semantic and concept drift.</p>
+        <p className="idw-page-subtitle">
+          {isSnapshotMode ? "Snapshot analysis for specific date." : "Historical trends and key shifts."}
+        </p>
       </header>
 
       {/* ----------------------------------------------- */}
@@ -100,7 +124,7 @@ function Dashboard() {
       {/* ----------------------------------------------- */}
       <section className="idw-controls" style={{ flexWrap: "wrap", gap: "1.5rem" }}>
 
-        {/* Date Picker (Primary Control) */}
+        {/* Date Picker */}
         <label className="idw-field">
           <span>Snapshot Date</span>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -114,7 +138,7 @@ function Dashboard() {
               <button
                 className="idw-btn-xs"
                 onClick={() => setSelectedDate("")}
-                title="Clear date to use time range"
+                title="Clear to view history"
               >
                 Clear
               </button>
@@ -122,54 +146,111 @@ function Dashboard() {
           </div>
         </label>
 
-        {/* Time Range Selector (Only active if no date selected) */}
+        {/* Time Range Selector */}
         <label className={`idw-field ${selectedDate ? "idw-disabled" : ""}`}>
           <span>Time Range</span>
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
             disabled={!!selectedDate}
-            title={selectedDate ? "Clear date to use time range" : "Select time window"}
+            className="idw-select"
           >
-            <option value="24h">24 hours</option>
-            <option value="7d">7 days</option>
-            <option value="30d">30 days</option>
-            <option value="1y">1 year</option>
+            <option value="24h">Last 24 Hours</option>
+            <option value="7d">Last 7 Days (1 Week)</option>
+            <option value="30d">Last 30 Days (1 Month)</option>
+            <option value="6m">Last 6 Months</option>
+            <option value="1y">Last 1 Year</option>
           </select>
         </label>
 
-        {/* Showing Label */}
         <div style={{ alignSelf: "flex-end", paddingBottom: "0.5rem", fontSize: "0.9rem", color: "#666" }}>
-          {selectedDate
-            ? (isValidSummary ? `Showing snapshot: ${summary.date}` : "No data for this date")
-            : "Showing latest available data"}
+          {isSnapshotMode
+            ? `Viewing Snapshot: ${selectedDate}`
+            : `Viewing Trend: ${timeRange}`}
         </div>
-
       </section>
 
       {error && <p className="idw-error">{error}</p>}
 
-      {/* ----------------------------------------------- */}
-      {/* Summary Cards                                    */}
-      {/* ----------------------------------------------- */}
+      {/* ================================================================================= */}
+      {/* VIEW MODE 1: GLOBAL TRENDS (Default when no date selected)                        */}
+      {/* ================================================================================= */}
+      {!isSnapshotMode && (
+        <>
+          {/* Global Chart */}
+          <DriftCharts timeSeriesData={timeSeriesData} />
 
-      {/* Case 1: Error / No Data for Date */}
-      {!isValidSummary && selectedDate && (
-        <div className="idw-panel" style={{ padding: "2rem", textAlign: "center", color: "#666" }}>
-          <h4>No Data Found</h4>
-          <p>There is no drift report available for {selectedDate}.</p>
-          <button
-            className="idw-btn"
-            style={{ marginTop: "1rem" }}
-            onClick={() => setSelectedDate("")}
-          >
-            View Latest
-          </button>
-        </div>
+          {/* Top Concept Shift Explanation */}
+          {contextShift ? (
+            <section className="idw-panel" style={{ marginTop: "1.5rem" }}>
+              <header className="idw-panel-header" style={{ borderBottom: "1px solid #e5e7eb", paddingBottom: "1rem" }}>
+                <div>
+                  <h3 style={{ color: "#db2777" }}>Top Context Shift: {contextShift.topic}</h3>
+                  <p>Most significant meaning change detected in this period ({contextShift.period}).</p>
+                </div>
+              </header>
+              <div className="idw-panel-body">
+                {contextShift.word_context && contextShift.word_context.map((item, i) => (
+                  <div key={i} className="idw-comparison-row" style={{ marginBottom: "1rem", padding: "1rem", background: "#f9fafb", borderRadius: "8px" }}>
+                    <div style={{ marginBottom: "0.5rem", fontWeight: "bold" }}>"{item.word}" ({item.type === "rising" ? "Rising" : "Falling"})</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", fontSize: "0.9rem" }}>
+
+                      <div style={{ background: "white", padding: "0.5rem", borderRadius: "4px", border: "1px solid #eee" }}>
+                        <span style={{ color: "#6b7280", fontSize: "0.75rem", textTransform: "uppercase" }}>Used to mean:</span>
+                        <ul style={{ paddingLeft: "1rem", margin: "0.5rem 0 0 0", color: "#4b5563" }}>
+                          {item.context_old.map((s, idx) => <li key={idx}>{s}</li>)}
+                        </ul>
+                      </div>
+
+                      <div style={{ background: "white", padding: "0.5rem", borderRadius: "4px", border: "1px solid #fce7f3" }}>
+                        <span style={{ color: "#db2777", fontSize: "0.75rem", textTransform: "uppercase" }}>Now refers to:</span>
+                        <ul style={{ paddingLeft: "1rem", margin: "0.5rem 0 0 0", color: "#4b5563" }}>
+                          {item.context_new.map((s, idx) => <li key={idx}>{s}</li>)}
+                        </ul>
+                      </div>
+
+                    </div>
+                  </div>
+                ))}
+                <div style={{ marginTop: "1rem", textAlign: "right" }}>
+                  <button className="idw-btn-xs" onClick={() => setSelectedTopic(contextShift.topic)}>Deep Dive Analysis →</button>
+                </div>
+              </div>
+            </section>
+          ) : (
+            !loading && <div className="idw-panel" style={{ marginTop: "1rem", padding: "2rem", textAlign: "center", color: "#9ca3af" }}>No significant shifts detected in this range.</div>
+          )}
+
+          {/* Range Alerts */}
+          <section className="idw-panel" style={{ marginTop: "1.5rem" }}>
+            <header className="idw-panel-header">
+              <h3>Recent Alerts</h3>
+            </header>
+            <div className="idw-panel-body">
+              {loading ? (
+                <TableSkeleton rows={3} />
+              ) : alerts.length === 0 ? (
+                <EmptyState message="No alerts in this period" />
+              ) : (
+                <ul className="idw-alert-list">
+                  {alerts.map((a, i) => (
+                    <li key={i} className="idw-alert-item">
+                      <span className={`idw-pill ${a.severity === "critical" ? "idw-pill-bad" : a.severity === "warning" ? "idw-pill-warn" : "idw-pill-ok"}`}>{a.severity}</span>
+                      <span style={{ marginLeft: "1rem" }}>{a.message}</span>
+                      <span style={{ marginLeft: "auto", fontSize: "0.8rem", color: "#9ca3af" }}>{a.timestamp}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </section>
+        </>
       )}
 
-      {/* Case 2: Valid Data */}
-      {isValidSummary && (
+      {/* ================================================================================= */}
+      {/* VIEW MODE 2: SNAPSHOT (Specific Date)                                            */}
+      {/* ================================================================================= */}
+      {isSnapshotMode && isValidSummary && (
         <>
           <section className="idw-summary-row">
             <StatCard label="Snapshot Date" value={summary.date || "N/A"} highlight />
@@ -179,7 +260,7 @@ function Dashboard() {
             <StatCard label="Alerts" value={summary.alert_count || 0} />
           </section>
 
-          {/* Charts */}
+          {/* Charts (Topic Comparison mode) */}
           <DriftCharts semantic={semantic} concept={concept} />
 
           {/* Semantic Table */}
@@ -244,11 +325,8 @@ function Dashboard() {
           </section >
 
           {/* Alerts */}
-          < section className="idw-panel" >
-            <header className="idw-panel-header">
-              <h3>Alerts</h3>
-              <p>Triggered drift alerts.</p>
-            </header>
+          <section className="idw-panel">
+            <header className="idw-panel-header"><h3>Active Alerts</h3></header>
             <div className="idw-panel-body">
               {loading ? (
                 <TableSkeleton rows={3} />
@@ -277,7 +355,7 @@ function Dashboard() {
                 </ul>
               )}
             </div>
-          </section >
+          </section>
         </>
       )}
 
