@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import "./ExplorePage.css";
+
 /* Settings */
 const settings = JSON.parse(localStorage.getItem("idw-settings")) || {};
 const API_BASE = settings.apiBaseUrl
@@ -51,6 +53,29 @@ function ExplorePage() {
       console.error("Failed to load topic embeddings:", err);
     }
   }
+
+  const handleExport = () => {
+    if (!embInfo || embInfo.length === 0) return;
+
+    // Convert data to CSV
+    const headers = ["Date", "Path", "Concept_Report_Link", "Semantic_Report_Link"];
+    const topicKey = selectedTopic.replace(/ /g, "_");
+
+    const rows = embInfo.map(row => {
+      const semLink = `${API_BASE}/drift_reports/visual/${topicKey}_semantic_drift_${row.date}.html`;
+      const conLink = `${API_BASE}/drift_reports/visual/${topicKey}_concept_drift_${row.date}.html`;
+      return [row.date, row.path, conLink, semLink].join(",");
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `${topicKey}_drift_data.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="idw-main animate-fade-in">
@@ -119,7 +144,16 @@ function ExplorePage() {
               <h3 style={{ margin: 0 }}>{selectedTopic} Analysis</h3>
               <p style={{ margin: 0, color: "#6b7280", fontSize: "0.9rem" }}>Historical snapshots and generated reports.</p>
             </div>
-            <button className="idw-btn-ghost" onClick={() => setSelectedTopic(null)}>Close</button>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                className="idw-btn-xs idw-btn-primary"
+                onClick={handleExport}
+                title="Download CSV"
+              >
+                Export Data
+              </button>
+              <button className="idw-btn-ghost" onClick={() => setSelectedTopic(null)}>Close</button>
+            </div>
           </header>
 
           <div className="idw-panel-body">
