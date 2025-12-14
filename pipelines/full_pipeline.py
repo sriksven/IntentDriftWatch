@@ -69,6 +69,7 @@ except ImportError:
         run_concept_drift = None
 
 from data_pipeline.utils.log_data_collection import log_collection_event
+from monitoring.drift_summary import main as run_drift_summary
 
 # =========================================
 # CONFIG
@@ -194,6 +195,16 @@ def run_full_pipeline():
         if os.path.exists("drift_reports/visual"):
             mlflow.log_artifacts("drift_reports/visual", artifact_path="visual_reports")
             logger.info("Visual drift reports logged to MLflow")
+
+        # -----------------------------
+        # PHASE 6: SUMMARY & ALERTS
+        # -----------------------------
+        logger.info("Phase 6: Generating summaries and checking alerts")
+        try:
+            run_drift_summary()
+            logger.info("Drift summaries generated successfully.")
+        except Exception as e:
+            logger.error(f"Drift summary generation failed: {e}")
 
         # -----------------------------
         # END OF RUN
