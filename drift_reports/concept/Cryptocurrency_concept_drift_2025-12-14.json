@@ -1,15 +1,15 @@
 {
   "topic": "Cryptocurrency",
-  "timestamp": "2025-12-14 04:07:16.891712",
+  "timestamp": "2025-12-14 15:15:22.657589",
   "old_date": "2025-11-15",
   "new_date": "2025-12-14",
   "old_samples": 131,
   "new_samples": 131,
   "train_acc": 1.0,
-  "test_acc": 0.620253164556962,
+  "test_acc": 0.569620253164557,
   "train_f1": 1.0,
-  "test_f1": 0.620253164556962,
-  "accuracy_drop": 0.3797,
-  "status": "Moderate Drift",
-  "interpretation": "Model can distinguish old/new with 62.0% accuracy"
+  "test_f1": 0.5657279298727635,
+  "accuracy_drop": 0.4304,
+  "status": "Stable",
+  "interpretation": "Model can distinguish old/new with 57.0% accuracy"
 }

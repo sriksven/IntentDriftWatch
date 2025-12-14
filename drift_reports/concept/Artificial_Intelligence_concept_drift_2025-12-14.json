@@ -1,15 +1,15 @@
 {
   "topic": "Artificial Intelligence",
-  "timestamp": "2025-12-14 04:07:17.991597",
+  "timestamp": "2025-12-14 15:15:23.193334",
   "old_date": "2025-11-15",
   "new_date": "2025-12-14",
   "old_samples": 131,
   "new_samples": 131,
   "train_acc": 1.0,
-  "test_acc": 0.5443037974683544,
+  "test_acc": 0.5063291139240507,
   "train_f1": 1.0,
-  "test_f1": 0.5412128348542832,
-  "accuracy_drop": 0.4557,
+  "test_f1": 0.5029875865726905,
+  "accuracy_drop": 0.4937,
   "status": "Stable",
-  "interpretation": "Model can distinguish old/new with 54.4% accuracy"
+  "interpretation": "Model can distinguish old/new with 50.6% accuracy"
 }

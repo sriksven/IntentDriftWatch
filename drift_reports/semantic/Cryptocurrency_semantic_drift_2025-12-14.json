@@ -1,13 +1,13 @@
 {
   "topic": "Cryptocurrency",
-  "timestamp": "2025-12-14 04:07:04.962089",
+  "timestamp": "2025-12-14 15:15:10.638609",
   "old_date": "2025-11-15",
   "new_date": "2025-12-14",
   "old_samples": 131,
   "new_samples": 131,
-  "cosine_drift": 0.03975796699523926,
-  "jsd_drift": 0.12802168726921082,
-  "drift_score": 0.08389999717473984,
+  "cosine_drift": 0.03405648469924927,
+  "jsd_drift": 0.12883208692073822,
+  "drift_score": 0.08139999955892563,
   "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Cryptocurrency.npy",
   "new_snapshot": "data_pipeline/data/processed/embeddings/2025-12-14/Cryptocurrency.npy",
   "status": "Stable"

@@ -1,13 +1,13 @@
 {
   "topic": "Electric Vehicles",
-  "timestamp": "2025-12-14 04:07:05.023749",
+  "timestamp": "2025-12-14 15:15:10.819947",
   "old_date": "2025-11-15",
   "new_date": "2025-12-14",
   "old_samples": 131,
   "new_samples": 131,
-  "cosine_drift": 0.035709261894226074,
-  "jsd_drift": 0.13277509808540344,
-  "drift_score": 0.08420000225305557,
+  "cosine_drift": 0.04003417491912842,
+  "jsd_drift": 0.1315954327583313,
+  "drift_score": 0.08579999953508377,
   "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Electric_Vehicles.npy",
   "new_snapshot": "data_pipeline/data/processed/embeddings/2025-12-14/Electric_Vehicles.npy",
   "status": "Stable"
