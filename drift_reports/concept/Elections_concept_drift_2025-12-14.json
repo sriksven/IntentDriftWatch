@@ -1,15 +1,15 @@
 {
   "topic": "Elections",
-  "timestamp": "2025-12-14 01:28:59.292153",
+  "timestamp": "2025-12-14 04:07:16.359537",
   "old_date": "2025-11-15",
   "new_date": "2025-12-14",
   "old_samples": 131,
   "new_samples": 131,
   "train_acc": 1.0,
-  "test_acc": 0.5822784810126582,
+  "test_acc": 0.5949367088607594,
   "train_f1": 1.0,
-  "test_f1": 0.5802588765695285,
-  "accuracy_drop": 0.4177,
+  "test_f1": 0.5929817701969601,
+  "accuracy_drop": 0.4051,
   "status": "Stable",
-  "interpretation": "Model can distinguish old/new with 58.2% accuracy"
+  "interpretation": "Model can distinguish old/new with 59.5% accuracy"
 }

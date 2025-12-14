@@ -1,13 +1,13 @@
 {
   "topic": "Climate Change",
-  "timestamp": "2025-12-14 01:28:46.553248",
+  "timestamp": "2025-12-14 04:07:05.145696",
   "old_date": "2025-11-15",
   "new_date": "2025-12-14",
   "old_samples": 131,
   "new_samples": 131,
-  "cosine_drift": 0.05634993314743042,
-  "jsd_drift": 0.1330338567495346,
-  "drift_score": 0.09470000118017197,
+  "cosine_drift": 0.053922295570373535,
+  "jsd_drift": 0.1331760585308075,
+  "drift_score": 0.09350000321865082,
   "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Climate_Change.npy",
   "new_snapshot": "data_pipeline/data/processed/embeddings/2025-12-14/Climate_Change.npy",
   "status": "Stable"

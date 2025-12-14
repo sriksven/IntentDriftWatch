@@ -1,15 +1,15 @@
 {
   "topic": "Electric Vehicles",
-  "timestamp": "2025-12-14 01:28:58.818557",
+  "timestamp": "2025-12-14 04:07:17.477254",
   "old_date": "2025-11-15",
   "new_date": "2025-12-14",
   "old_samples": 131,
   "new_samples": 131,
   "train_acc": 1.0,
-  "test_acc": 0.46835443037974683,
+  "test_acc": 0.5443037974683544,
   "train_f1": 1.0,
-  "test_f1": 0.46818403115871465,
-  "accuracy_drop": 0.5316,
+  "test_f1": 0.5376458984053921,
+  "accuracy_drop": 0.4557,
   "status": "Stable",
-  "interpretation": "Model can distinguish old/new with 46.8% accuracy"
+  "interpretation": "Model can distinguish old/new with 54.4% accuracy"
 }
