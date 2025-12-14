@@ -95,32 +95,36 @@ def get_top_diff_words(texts_old: List[str], texts_new: List[str], top_n=10):
         return [], []
 
 def find_snippets(texts: List[str], keywords: List[str], max_snippets=2):
-    """Find sentences containing keywords."""
-    snippets = []
+    """
+    Find sentences containing specific keywords.
+    Returns a dict { keyword: [snippet1, snippet2] }
+    """
+    snippets = {k: [] for k in keywords}
+    
+    # Pre-compile regex for keywords for faster search
+    # (Using simple split for now, robust enough for prototype)
     
     for text in texts:
-        if len(snippets) >= max_snippets:
+        # Stop if we found enough for all keywords (optimization)
+        if all(len(snippets[k]) >= max_snippets for k in keywords):
             break
             
-        # Simple sentence split (can be improved)
         sentences = re.split(r'[.!?]+', text)
         
         for sent in sentences:
             sent = sent.strip()
-            if not sent: 
-                continue
-                
-            # Check if any keyword is in this sentence
-            # Naive check: word in sentence string
-            for kw in keywords:
-                # Add word boundary check regex would be better but keeping simple for now
-                if f" {kw} " in f" {sent.lower()} ":
-                    snippets.append({"text": sent, "keyword": kw})
-                    break
+            if not sent: continue
             
-            if len(snippets) >= max_snippets:
-                break
+            sent_lower = " " + sent.lower() + " "
+            
+            for k in keywords:
+                if len(snippets[k]) >= max_snippets:
+                    continue
                 
+                # Check for word boundary roughly
+                if f" {k} " in sent_lower:
+                    snippets[k].append(sent)
+
     return snippets
 
 @router.get("/drift_details")
@@ -131,6 +135,7 @@ def get_drift_details(
 ):
     """
     Analyze word usage changes between two dates for a topic.
+    Returns distinct context snippets for the top changing words.
     """
     logger.info(f"Analyzing drift details for {topic}: {old_date} -> {new_date}")
     
@@ -138,18 +143,48 @@ def get_drift_details(
     texts_new = load_texts(topic, new_date)
     
     if not texts_old and not texts_new:
-        return {"rising": [], "falling": [], "snippets": [], "warning": "No text data found for these dates."}
+        return {"word_context": [], "warning": "No text data found for these dates."}
 
     rising, falling = get_top_diff_words(texts_old, texts_new)
     
-    # Get snippets for top 3 rising words
-    top_rising_keywords = [item['word'] for item in rising[:3]]
-    snippets = find_snippets(texts_new, top_rising_keywords)
+    # Select top 3 rising and top 3 falling
+    top_rising = rising[:3]
+    top_falling = falling[:3]
     
+    # We want to see:
+    # 1. Rising words: usage in NEW vs usage in OLD (if any)
+    # 2. Falling words: usage in OLD vs usage in NEW (if any)
+    
+    target_words = []
+    
+    # Adding rising words
+    for item in top_rising:
+        target_words.append({"word": item['word'], "type": "rising", "score": item['score']})
+        
+    # Adding falling words
+    for item in top_falling:
+        target_words.append({"word": item['word'], "type": "falling", "score": item['score']})
+        
+    unique_keywords = list(set([t['word'] for t in target_words]))
+    
+    # Find snippets in BOTH datasets for comparison
+    snippets_old = find_snippets(texts_old, unique_keywords, max_snippets=2)
+    snippets_new = find_snippets(texts_new, unique_keywords, max_snippets=2)
+    
+    word_context = []
+    
+    for item in target_words:
+        w = item['word']
+        word_context.append({
+            "word": w,
+            "type": item['type'],
+            "score": item['score'],
+            "context_old": snippets_old.get(w, []),
+            "context_new": snippets_new.get(w, [])
+        })
+
     return {
         "topic": topic,
         "period": f"{old_date} -> {new_date}",
-        "rising": rising,
-        "falling": falling,
-        "snippets": snippets
+        "word_context": word_context
     }

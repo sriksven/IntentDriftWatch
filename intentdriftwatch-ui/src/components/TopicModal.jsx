@@ -149,45 +149,62 @@ export default function TopicModal({ topic, onClose }) {
             {driftDetails && (
               <div className="idw-panel" style={{ marginTop: "1rem", borderTop: "1px solid #eee" }}>
                 <h4 style={{ marginBottom: "1rem" }}>
-                  Word Drift: {driftDetails.period}
+                  Context Shift: {driftDetails.period}
                 </h4>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
-                  <div>
-                    <h5 style={{ color: "#059669", marginBottom: "0.5rem" }}>Trending Up ↗</h5>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                      {driftDetails.rising.map((w, i) => (
-                        <span key={i} className="idw-tag-green" title={`Score: ${w.score.toFixed(4)}`}>
-                          {w.word}
-                        </span>
-                      ))}
-                      {driftDetails.rising.length === 0 && <span style={{ color: "#999", fontSize: "0.9em" }}>No significant changes</span>}
-                    </div>
-                  </div>
-                  <div>
-                    <h5 style={{ color: "#dc2626", marginBottom: "0.5rem" }}>Trending Down ↘</h5>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                      {driftDetails.falling.map((w, i) => (
-                        <span key={i} className="idw-tag-red" title={`Score: ${w.score.toFixed(4)}`}>
-                          {w.word}
-                        </span>
-                      ))}
-                      {driftDetails.falling.length === 0 && <span style={{ color: "#999", fontSize: "0.9em" }}>No significant changes</span>}
-                    </div>
-                  </div>
-                </div>
+                {driftDetails.word_context && driftDetails.word_context.length > 0 ? (
+                  <div className="idw-context-comparison">
+                    {driftDetails.word_context.map((item, i) => (
+                      <div k={i} className="idw-comparison-row" style={{ marginBottom: "1.5rem", paddingBottom: "1.5rem", borderBottom: "1px solid #f0f0f0" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem" }}>
+                          <h5 style={{ fontSize: "1.1rem", margin: 0 }}>
+                            <span className={item.type === "rising" ? "idw-tag-green" : "idw-tag-red"}>
+                              {item.word}
+                            </span>
+                          </h5>
+                          <span style={{ fontSize: "0.85rem", color: "#888" }}>
+                            Shift Score: {item.score.toFixed(3)}
+                          </span>
+                        </div>
 
-                {driftDetails.snippets.length > 0 && (
-                  <div>
-                    <h5 style={{ marginBottom: "0.5rem" }}>Context Snippets (New)</h5>
-                    <ul style={{ paddingLeft: "1.2rem", fontSize: "0.9rem", color: "#555" }}>
-                      {driftDetails.snippets.map((s, i) => (
-                        <li key={i} style={{ marginBottom: "0.5rem" }}>
-                          "{s.text}" <span style={{ color: "#059669", fontWeight: "bold" }}>[{s.keyword}]</span>
-                        </li>
-                      ))}
-                    </ul>
+                        <div className="idw-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                          {/* Old Context */}
+                          <div className="idw-context-box" style={{ background: "#f9fafb", padding: "0.75rem", borderRadius: "6px" }}>
+                            <h6 style={{ fontSize: "0.75rem", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.5rem" }}>
+                              Then (Old Context)
+                            </h6>
+                            {item.context_old.length > 0 ? (
+                              <ul style={{ paddingLeft: "1rem", margin: 0, fontSize: "0.9rem", color: "#374151" }}>
+                                {item.context_old.map((s, idx) => (
+                                  <li key={idx} style={{ marginBottom: "0.25rem" }}>"{s}"</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p style={{ fontSize: "0.85rem", color: "#9ca3af", fontStyle: "italic" }}>No usage found in old snapshot.</p>
+                            )}
+                          </div>
+
+                          {/* New Context */}
+                          <div className="idw-context-box" style={{ background: "#fdf2f8", padding: "0.75rem", borderRadius: "6px" }}>
+                            <h6 style={{ fontSize: "0.75rem", textTransform: "uppercase", color: "#db2777", marginBottom: "0.5rem" }}>
+                              Now (New Context)
+                            </h6>
+                            {item.context_new.length > 0 ? (
+                              <ul style={{ paddingLeft: "1rem", margin: 0, fontSize: "0.9rem", color: "#374151" }}>
+                                {item.context_new.map((s, idx) => (
+                                  <li key={idx} style={{ marginBottom: "0.25rem" }}>"{s}"</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p style={{ fontSize: "0.85rem", color: "#9ca3af", fontStyle: "italic" }}>No usage found in new snapshot.</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                ) : (
+                  <p>No significant context shift detected for this period.</p>
                 )}
               </div>
             )}
