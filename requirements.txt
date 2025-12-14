@@ -31,3 +31,4 @@ feedparser
 # MLOps & Drift Visualization
 mlflow
 evidently
+groq

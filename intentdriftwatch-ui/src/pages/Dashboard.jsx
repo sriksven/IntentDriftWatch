@@ -74,7 +74,7 @@ function Dashboard() {
         const shiftJson = await shiftRes.json();
         const alertsJson = await alertsRes.json();
 
-        setTimeSeriesData(trendJson.trend || []);
+        setTimeSeriesData(trendJson);
         setContextShift(shiftJson.word_context ? shiftJson : null);
         setAlerts(alertsJson.alerts || alertsJson || []);
 
@@ -184,8 +184,21 @@ function Dashboard() {
       {/* ================================================================================= */}
       {!isSnapshotMode && (
         <>
+          {/* Global Graph Explanation */}
+          {timeSeriesData.explanation && (
+            <section className="idw-panel" style={{ marginTop: "1rem", marginBottom: "1.5rem", background: "linear-gradient(to right, #fdfbf7, #fff7ed)", border: "1px solid #fed7aa" }}>
+              <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+                <div style={{ fontSize: "1.5rem" }}>💡</div>
+                <div>
+                  <h4 style={{ margin: "0 0 0.5rem 0", color: "#9a3412" }}>Trend Analysis</h4>
+                  <p style={{ margin: 0, color: "#431407", fontStyle: "italic" }}>"{timeSeriesData.explanation}"</p>
+                </div>
+              </div>
+            </section>
+          )}
+
           {/* Global Chart */}
-          <DriftCharts timeSeriesData={timeSeriesData} />
+          <DriftCharts timeSeriesData={timeSeriesData.trend || timeSeriesData} />
 
           {/* Top Concept Shift Explanation */}
           {contextShift ? (
@@ -200,6 +213,14 @@ function Dashboard() {
                 {contextShift.word_context && contextShift.word_context.map((item, i) => (
                   <div key={i} className="idw-comparison-row" style={{ marginBottom: "1rem", padding: "1rem", background: "#f9fafb", borderRadius: "8px" }}>
                     <div style={{ marginBottom: "0.5rem", fontWeight: "bold" }}>"{item.word}" ({item.type === "rising" ? "Rising" : "Falling"})</div>
+
+                    {/* Generative Explanation */}
+                    {item.llm_explanation && (
+                      <div style={{ marginBottom: "1rem", padding: "0.75rem", background: "#fdf2f8", borderLeft: "4px solid #db2777", borderRadius: "4px", color: "#be185d", fontStyle: "italic" }}>
+                        {item.llm_explanation}
+                      </div>
+                    )}
+
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", fontSize: "0.9rem" }}>
 
                       <div style={{ background: "white", padding: "0.5rem", borderRadius: "4px", border: "1px solid #eee" }}>

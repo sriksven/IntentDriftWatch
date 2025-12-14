@@ -8,6 +8,7 @@ from fastapi import APIRouter, Query, HTTPException
 from typing import List, Dict, Any
 
 from sklearn.feature_extraction.text import CountVectorizer
+from backend.utils.llm_helper import summarize_context_shift
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -175,12 +176,30 @@ def get_drift_details(
     
     for item in target_words:
         w = item['word']
+        
+        # Prepare context strings
+        ctx_old = snippets_old.get(w, [])
+        ctx_new = snippets_new.get(w, [])
+        
+        # Format for LLM
+        old_txt = "\n".join(ctx_old) if ctx_old else "No usage found."
+        new_txt = "\n".join(ctx_new) if ctx_new else "No usage found."
+        
+        # Generate summary
+        explanation = None
+        if ctx_old or ctx_new:
+            try:
+                explanation = summarize_context_shift(topic, w, old_txt, new_txt)
+            except Exception as e:
+                logger.error(f"Failed to generate summary for {w}: {e}")
+
         word_context.append({
             "word": w,
             "type": item['type'],
             "score": item['score'],
-            "context_old": snippets_old.get(w, []),
-            "context_new": snippets_new.get(w, [])
+            "context_old": ctx_old,
+            "context_new": ctx_new,
+            "llm_explanation": explanation
         })
 
     return {

@@ -8,6 +8,7 @@ from typing import List, Dict, Any
 # Import to reuse context shift logic
 # We will call the function directly. Note: It expects arguments, not Request object if called directly.
 from .drift_details import get_drift_details
+from backend.utils.llm_helper import explain_graph_trend
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -86,8 +87,15 @@ def get_global_trend(
             "avg_semantic_drift": round(avg_sem, 4),
             "avg_concept_accuracy": round(avg_conc, 4)
         })
-        
-    return {"trend": trend_data}
+    
+    explanation = None
+    if trend_data:
+        try:
+             explanation = explain_graph_trend(trend_data)
+        except Exception as e:
+             logger.error(f"Failed to explain trend: {e}")
+             
+    return {"trend": trend_data, "explanation": explanation}
 
 @router.get("/analytics/top_shift")
 def get_top_shift(
