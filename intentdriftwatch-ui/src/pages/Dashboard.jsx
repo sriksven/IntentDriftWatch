@@ -114,6 +114,7 @@ function Dashboard() {
 
   // Helper to check if summary is valid
   const isSnapshotMode = !!selectedDate;
+  const isValidSummary = summary && !summary.detail;
 
   return (
     <div className="idw-main">
