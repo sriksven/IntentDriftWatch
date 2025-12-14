@@ -132,6 +132,23 @@ Outputs:
 
 ---
 
+# Configuration & Environment Variables
+
+To use the Semantic Drift explanation features (powered by LLM), you must configure the following environment variables in a `.env` file in the project root:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GROQ_API_KEY` | API Key for Groq Cloud. Used for generating explanations of context shifts. | Yes |
+
+### Verifying Configuration
+You can run the provided verification script to check if your environment is set up correctly:
+
+```bash
+python scripts/verify_groq_setup.py
+```
+
+---
+
 # Detailed Command Explanations
 
 Below, **every command** is explained in terms of:
