@@ -17,19 +17,17 @@ function NavBar() {
         </Link>
 
         <Link
-          to="/explore"
-          className={`idw-nav-item ${
-            pathname === "/explore" ? "active" : ""
-          }`}
+          to="/trends"
+          className={`idw-nav-item ${pathname === "/trends" ? "active" : ""
+            }`}
         >
-          Explore
+          Trends
         </Link>
 
         <Link
           to="/settings"
-          className={`idw-nav-item ${
-            pathname === "/settings" ? "active" : ""
-          }`}
+          className={`idw-nav-item ${pathname === "/settings" ? "active" : ""
+            }`}
         >
           Settings
         </Link>

@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 
 import Dashboard from "./pages/Dashboard";
-import ExplorePage from "./pages/ExplorePage";
+import TrendsPage from "./pages/TrendsPage";
 import SettingsPage from "./pages/SettingsPage";
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/trends" element={<TrendsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Routes>
     </div>
