@@ -25,6 +25,31 @@ function Dashboard() {
   /* -------------------------------------------------- */
   /*  LOAD DATA                                         */
   /* -------------------------------------------------- */
+  /* -------------------------------------------------- */
+  /*  LOAD DATES                                        */
+  /* -------------------------------------------------- */
+  useEffect(() => {
+    async function loadDates() {
+      try {
+        const res = await fetch(`${API_BASE}/embeddings/info`);
+        const json = await res.json();
+        const dates = json.dates || [];
+        if (dates.length > 0) {
+          // Dates are typically sorted, but let's take the last one just in case
+          // or sort them ourselves if needed. Assuming backend returns sorted or valid list.
+          // Usually last item is latest.
+          setSelectedDate(dates[dates.length - 1]);
+        }
+      } catch (err) {
+        console.error("Failed to load dates:", err);
+      }
+    }
+    loadDates();
+  }, []);
+
+  /* -------------------------------------------------- */
+  /*  LOAD DATA                                         */
+  /* -------------------------------------------------- */
   const loadData = useCallback(async () => {
     if (!selectedDate) return;
 
