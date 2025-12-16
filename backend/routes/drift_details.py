@@ -115,6 +115,10 @@ def find_snippets(texts: List[str], keywords: List[str], max_snippets=2):
         for sent in sentences:
             sent = sent.strip()
             if not sent: continue
+
+            # Cap the length of a single snippet to avoid UI bloat
+            if len(sent) > 200:
+                sent = sent[:200] + "..."
             
             sent_lower = " " + sent.lower() + " "
             
