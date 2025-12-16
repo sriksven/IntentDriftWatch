@@ -23,6 +23,7 @@ export default function TopicModal({ topic, onClose }) {
 
   const [driftDetails, setDriftDetails] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(0);
 
   const analyzeDrift = async (index) => {
     if (index <= 0) return;
@@ -52,6 +53,9 @@ export default function TopicModal({ topic, onClose }) {
 
         setSemanticTS(json.semantic || []);
         setConceptTS(json.concept || []);
+        if (json.semantic && json.semantic.length > 0) {
+          setSelectedIdx(json.semantic.length - 1);
+        }
 
       } catch (e) {
         console.error("Topic history fetch failed:", e);
@@ -103,50 +107,58 @@ export default function TopicModal({ topic, onClose }) {
               </div>
             </div>
 
-            <div className="idw-panel" style={{ marginTop: "1rem" }}>
-              <h4 style={{ marginBottom: "0.5rem" }}>Latest Snapshot Metrics</h4>
+            {/* Time Travel Scrubber */}
+            <div className="idw-panel" style={{ marginTop: "1rem", background: "linear-gradient(to bottom, #f8fafc, #fff)", border: "1px solid #e2e8f0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <h4 style={{ margin: 0, color: "#1e293b" }}>🕰 Time Travel Analysis</h4>
+                {semanticTS.length > 0 && selectedIdx > 0 && (
+                  <span style={{ fontSize: "0.9rem", color: "#64748b", background: "#f1f5f9", padding: "0.2rem 0.6rem", borderRadius: "12px" }}>
+                    Comparing: <strong>{semanticTS[selectedIdx - 1].date}</strong> vs <strong>{semanticTS[selectedIdx].date}</strong>
+                  </span>
+                )}
+              </div>
 
-              {semanticTS.length === 0 ? (
-                <p>No drift history available.</p>
+              {semanticTS.length < 2 ? (
+                <p>Insufficient history for time travel.</p>
               ) : (
-                <table className="idw-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Semantic Drift</th>
-                      <th>Cosine</th>
-                      <th>JSD</th>
-                      <th>Concept Acc</th>
-                      <th>Accuracy Drop</th>
-                      <th>Context</th>
-                    </tr>
-                  </thead>
+                <div style={{ padding: "0 1rem" }}>
+                  {/* Slider */}
+                  <input
+                    type="range"
+                    min="1"
+                    max={semanticTS.length - 1}
+                    value={selectedIdx}
+                    onChange={(e) => {
+                      const idx = parseInt(e.target.value);
+                      setSelectedIdx(idx);
+                    }}
+                    style={{ width: "100%", cursor: "pointer", accentColor: "#4f46e5" }}
+                  />
 
-                  <tbody>
-                    {semanticTS.map((s, i) => (
-                      <tr key={i}>
-                        <td>{s.date}</td>
-                        <td>{num(s.drift_score)}</td>
-                        <td>{num(s.cosine_drift)}</td>
-                        <td>{num(s.jsd_drift)}</td>
-                        <td>{conceptTS[i]?.test_acc ?? "—"}</td>
-                        <td>{conceptTS[i]?.accuracy_drop ?? "—"}</td>
-                        {/* Analyze Button in Table */}
-                        <td>
-                          {i > 0 && (
-                            <button
-                              className="idw-btn-xs idw-btn-primary"
-                              onClick={() => analyzeDrift(i)}
-                              title="Click to see what changed"
-                            >
-                              Explain Drift
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  {/* Date Labels below Slider */}
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.5rem", fontSize: "0.8rem", color: "#94a3b8" }}>
+                    <span>{semanticTS[0]?.date}</span>
+                    <span>{semanticTS[semanticTS.length - 1]?.date}</span>
+                  </div>
+
+                  <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+                    <div style={{ fontSize: "2.5rem", fontWeight: "900", color: "#4f46e5", lineHeight: "1" }}>
+                      {semanticTS[selectedIdx]?.date}
+                    </div>
+                    <div style={{ color: "#64748b", marginTop: "0.5rem" }}>
+                      Drift Score: <span style={{ color: "#0f172a", fontWeight: "bold" }}>{num(semanticTS[selectedIdx]?.drift_score)}</span>
+                    </div>
+
+                    <button
+                      className="idw-btn"
+                      style={{ marginTop: "1.5rem", padding: "0.75rem 2rem", fontSize: "1.1rem" }}
+                      onClick={() => analyzeDrift(selectedIdx)}
+                      disabled={detailsLoading}
+                    >
+                      {detailsLoading ? "Analyzing..." : "Analyze Context Shift ✨"}
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
 
