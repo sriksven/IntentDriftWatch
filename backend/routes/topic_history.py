@@ -22,21 +22,29 @@ def topic_history(topic_name: str):
     data = load_history()
     topic = topic_name.replace("_", " ")
 
-    history = []
+    semantic_history = []
+    concept_history = []
 
     for summary in data:
         for row in summary.get("rows", []):
             if row.get("topic") == topic:
-                history.append({
+                # Semantic drift data
+                semantic_history.append({
                     "date": summary.get("date"),
-                    "semantic_score": row.get("semantic_score"),
+                    "drift_score": row.get("semantic_score"),
                     "cosine_drift": row.get("cosine_drift"),
-                    "jsd_drift": row.get("jsd_drift"),
-                    "concept_accuracy_drop": row.get("accuracy_drop"),
-                    "concept_status": row.get("concept_status")
+                    "jsd_drift": row.get("jsd_drift")
+                })
+                
+                # Concept drift data
+                concept_history.append({
+                    "date": summary.get("date"),
+                    "test_acc": row.get("test_acc"),
+                    "accuracy_drop": row.get("accuracy_drop")
                 })
 
     return {
         "topic": topic,
-        "history": history
+        "semantic": semantic_history,
+        "concept": concept_history
     }
