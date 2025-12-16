@@ -143,17 +143,14 @@ def get_top_shift(
         # However, checking if we have at least ONE valid date in range, we can look back further for context.
         return {"detail": "No text details available for this period"}
         
-    end_summary = valid_summaries[-1]
-    new_date = end_summary['date']
-    
-    # Try to find the earliest valid summary in the range
-    start_summary = valid_summaries[0]
-    old_date = start_summary['date']
-    
-    # If we only have one point, or start == end, we need to go back further in history outside the range
-    if old_date == new_date:
-        # Find the closest valid date before new_date
-        # valid_dates is sorted.
+    # Always use the TWO MOST RECENT dates, not the first and last in range
+    # This ensures we show the latest drift
+    if len(valid_summaries) < 2:
+        # Only one valid date in range, need to look back further
+        end_summary = valid_summaries[-1]
+        new_date = end_summary['date']
+        
+        # Find the closest valid date before new_date from ALL valid dates
         try:
             current_idx = valid_dates.index(new_date)
             if current_idx > 0:
@@ -162,6 +159,13 @@ def get_top_shift(
                  return {"detail": "Insufficient history for comparison"}
         except ValueError:
              return {"detail": "Date error"}
+    else:
+        # We have at least 2 valid dates in range - use the LAST TWO
+        end_summary = valid_summaries[-1]
+        start_summary = valid_summaries[-2]
+        
+        new_date = end_summary['date']
+        old_date = start_summary['date']
 
 
     logger.info(f"Comparing for Top Shift: {old_date} -> {new_date}")
