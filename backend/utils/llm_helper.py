@@ -36,9 +36,12 @@ def summarize_context_shift(topic, word, old_context, new_context):
     {new_context}
     
     Task: Explain how the meaning or usage of the word "{word}" has changed in the context of "{topic}".
-    Format:
-    - Start with a clear, direct sentence: "In the past, '{word}' meant/referred to..., but now it is used to describe..."
-    - Keep it under 50 words.
+    
+    Constraint:
+    - WRITE EXACTLY ONE PARAGRAPH.
+    - DO NOT use bullet points or lists.
+    - Start directly with the explanation.
+    - Keep it under 60 words.
     - Be conversational but accurate.
     """
     

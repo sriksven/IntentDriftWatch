@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
+CLEANED_DATA_DIR = BASE_DIR / "data_pipeline" / "data" / "processed" / "cleaned"
+
 
 def parse_date(d: str):
     return datetime.strptime(d, "%Y-%m-%d")
@@ -56,6 +58,21 @@ def get_summaries_in_range(time_range: str):
             continue
             
     return sorted(results, key=lambda x: x['date'])
+
+def get_valid_cleaned_dates():
+    """Returns a sorted list of dates (strings) that have cleaned text data."""
+    files = list(CLEANED_DATA_DIR.glob("*_cleaned_*.json"))
+    dates = set()
+    for f in files:
+        # Expected format: Topic_cleaned_YYYY-MM-DD.json
+        # We can extract the last part.
+        try:
+            parts = f.stem.split("_cleaned_")
+            if len(parts) > 1:
+                dates.add(parts[1])
+        except:
+            continue
+    return sorted(list(dates))
 
 @router.get("/analytics/global_trend")
 def get_global_trend(
@@ -110,21 +127,44 @@ def get_top_shift(
         return {"detail": "No data in range"}
         
     # We need start and end snapshots
-    if len(summaries) < 2:
-        # Fallback to just the latest snapshot comparison if only 1 exists
-        # But we really need 2 to show a trend. If 1, we can't show meaningful shift over period.
-        # Let's try to get the very last summary and compare with the one before it, even if outside range?
-        # Or just return empty.
-        latest = summaries[-1]
-        # Just return the top drifter from the latest snapshot vs its previous day (handled by drift_details default logic usually?)
-        # But drift_details takes explicit old_date and new_date.
-        return {"detail": "Insufficient history for range"}
-
-    start_summary = summaries[0]
-    end_summary = summaries[-1]
+    # Enhanced Logic: We need dates that actually have cleaned text data available
+    # to show the "Used To Mean" / "Now Refers To" examples.
     
-    old_date = start_summary['date']
+    valid_dates = get_valid_cleaned_dates()
+    if not valid_dates:
+         return {"detail": "No text data available for analysis"}
+
+    # Filter summaries to only those in valid_dates
+    valid_summaries = [s for s in summaries if s['date'] in valid_dates]
+    
+    if not valid_summaries:
+        # If no valid data in this range, maybe we can fallback? 
+        # But if the user asked for 7 days and we have no text data in 7 days, we can't show context shift.
+        # However, checking if we have at least ONE valid date in range, we can look back further for context.
+        return {"detail": "No text details available for this period"}
+        
+    end_summary = valid_summaries[-1]
     new_date = end_summary['date']
+    
+    # Try to find the earliest valid summary in the range
+    start_summary = valid_summaries[0]
+    old_date = start_summary['date']
+    
+    # If we only have one point, or start == end, we need to go back further in history outside the range
+    if old_date == new_date:
+        # Find the closest valid date before new_date
+        # valid_dates is sorted.
+        try:
+            current_idx = valid_dates.index(new_date)
+            if current_idx > 0:
+                old_date = valid_dates[current_idx - 1]
+            else:
+                 return {"detail": "Insufficient history for comparison"}
+        except ValueError:
+             return {"detail": "Date error"}
+
+
+    logger.info(f"Comparing for Top Shift: {old_date} -> {new_date}")
     
     # Find topic with max semantic drift in the END summary (snapshot drift)
     # OR change in drift? Usually we want "which topic drifted the most recently" or "cumulatively"?
