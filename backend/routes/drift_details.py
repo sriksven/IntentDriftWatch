@@ -102,23 +102,17 @@ def find_snippets(texts: List[str], keywords: List[str], max_snippets=1):
     """
     snippets = {k: [] for k in keywords}
     
-    # Pre-compile regex for keywords for faster search
-    # (Using simple split for now, robust enough for prototype)
-    
     for text in texts:
         # Stop if we found enough for all keywords (optimization)
         if all(len(snippets[k]) >= max_snippets for k in keywords):
             break
             
+        # Try sentence splitting first
         sentences = re.split(r'[.!?]+', text)
         
         for sent in sentences:
             sent = sent.strip()
             if not sent: continue
-
-            # Cap the length of a single snippet to avoid UI bloat - keep it very short
-            if len(sent) > 80:
-                sent = sent[:80] + "..."
             
             sent_lower = " " + sent.lower() + " "
             
@@ -126,9 +120,23 @@ def find_snippets(texts: List[str], keywords: List[str], max_snippets=1):
                 if len(snippets[k]) >= max_snippets:
                     continue
                 
-                # Check for word boundary roughly
+                # Check for word boundary
                 if f" {k} " in sent_lower:
-                    snippets[k].append(sent)
+                    # If sentence is too long, extract context around the keyword
+                    if len(sent) > 80:
+                        # Find the keyword position
+                        keyword_pos = sent_lower.find(f" {k} ")
+                        # Extract 40 chars before and after
+                        start = max(0, keyword_pos - 40)
+                        end = min(len(sent), keyword_pos + len(k) + 40)
+                        snippet = sent[start:end].strip()
+                        if start > 0:
+                            snippet = "..." + snippet
+                        if end < len(sent):
+                            snippet = snippet + "..."
+                        snippets[k].append(snippet)
+                    else:
+                        snippets[k].append(sent)
 
     return snippets
 
