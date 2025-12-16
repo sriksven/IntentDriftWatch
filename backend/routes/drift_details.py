@@ -95,7 +95,7 @@ def get_top_diff_words(texts_old: List[str], texts_new: List[str], top_n=10):
         # E.g. empty vocabulary
         return [], []
 
-def find_snippets(texts: List[str], keywords: List[str], max_snippets=2):
+def find_snippets(texts: List[str], keywords: List[str], max_snippets=1):
     """
     Find sentences containing specific keywords.
     Returns a dict { keyword: [snippet1, snippet2] }
@@ -116,9 +116,9 @@ def find_snippets(texts: List[str], keywords: List[str], max_snippets=2):
             sent = sent.strip()
             if not sent: continue
 
-            # Cap the length of a single snippet to avoid UI bloat
-            if len(sent) > 200:
-                sent = sent[:200] + "..."
+            # Cap the length of a single snippet to avoid UI bloat - keep it very short
+            if len(sent) > 80:
+                sent = sent[:80] + "..."
             
             sent_lower = " " + sent.lower() + " "
             
