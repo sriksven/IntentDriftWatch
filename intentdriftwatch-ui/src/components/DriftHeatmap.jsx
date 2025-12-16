@@ -3,8 +3,8 @@ import React from "react";
 function DriftHeatmap({ trendData, title = "Drift Heatmap" }) {
     // trendData: [{ date: "YYYY-MM-DD", avg_semantic_drift: 0.05, ... }]
 
-    // Find max for scaling
-    const maxDrift = Math.max(...trendData.map(d => d.avg_semantic_drift || 0), 0.1);
+    // Use a fixed scale for now to keep heatmaps consistent across topics
+    // const maxDrift = Math.max(...trendData.map(d => d.avg_semantic_drift || 0), 0.1);
 
     const getColor = (val) => {
         // 0 -> Green/Gray, Max -> Red

@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import DriftCharts from "../components/DriftCharts";
-import DriftCharts from "../components/DriftCharts";
 import TopicModal from "../components/TopicModal";
 import DriftVelocityGauge from "../components/DriftVelocityGauge";
 import DriftHeatmap from "../components/DriftHeatmap";
