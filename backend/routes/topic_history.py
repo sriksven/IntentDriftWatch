@@ -4,6 +4,8 @@ from pathlib import Path
 
 router = APIRouter()
 
+# Force redeploy - 2025-12-16
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
 
