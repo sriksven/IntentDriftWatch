@@ -62,6 +62,56 @@ def summarize_context_shift(topic, word, old_context, new_context):
         logger.error(f"Groq generation failed: {e}")
         return None
 
+def generate_context_bullets(raw_snippets, word, is_old=True):
+    """
+    Converts raw text snippets into clean, readable bullet points.
+    """
+    if not raw_snippets:
+        return []
+    
+    client = get_client()
+    if not client:
+        return raw_snippets  # Fallback to raw if no API
+    
+    timeframe = "previously" if is_old else "now"
+    snippets_text = "\n".join([f"- {s}" for s in raw_snippets])
+    
+    prompt = f"""
+    You are analyzing how the word "{word}" is being used in social media discussions.
+    
+    Raw text examples from {timeframe}:
+    {snippets_text}
+    
+    Task: Based on these examples, write 1-2 SHORT, CLEAR bullet points (max 15 words each) that explain what "{word}" referred to {timeframe}.
+    
+    Rules:
+    - Each bullet should be a complete, readable sentence
+    - Focus on the MEANING or CONTEXT, not the raw text
+    - Be concise and clear
+    - Return ONLY the bullet points, nothing else
+    - Start each line with a dash (-)
+    """
+    
+    try:
+        completion = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.5,
+            max_completion_tokens=100,
+            top_p=1,
+            stream=False,
+            stop=None
+        )
+        result = completion.choices[0].message.content.strip()
+        # Parse the bullet points
+        bullets = [line.strip().lstrip('-').strip() for line in result.split('\n') if line.strip().startswith('-')]
+        return bullets if bullets else raw_snippets
+    except Exception as e:
+        logger.error(f"Failed to generate context bullets: {e}")
+        return raw_snippets  # Fallback to raw
+
 def explain_graph_trend(trend_data):
     """
     Summarizes the drift trend from the time-series data.

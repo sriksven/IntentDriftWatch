@@ -8,7 +8,7 @@ from fastapi import APIRouter, Query, HTTPException
 from typing import List, Dict, Any
 
 from sklearn.feature_extraction.text import CountVectorizer
-from backend.utils.llm_helper import summarize_context_shift
+from backend.utils.llm_helper import summarize_context_shift, generate_context_bullets
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -190,16 +190,20 @@ def get_drift_details(
         w = item['word']
         
         # Prepare context strings
-        ctx_old = snippets_old.get(w, [])
-        ctx_new = snippets_new.get(w, [])
+        ctx_old_raw = snippets_old.get(w, [])
+        ctx_new_raw = snippets_new.get(w, [])
         
-        # Format for LLM
-        old_txt = "\n".join(ctx_old) if ctx_old else "No usage found."
-        new_txt = "\n".join(ctx_new) if ctx_new else "No usage found."
+        # Convert raw snippets to clean bullet points using LLM
+        ctx_old = generate_context_bullets(ctx_old_raw, w, is_old=True)
+        ctx_new = generate_context_bullets(ctx_new_raw, w, is_old=False)
+        
+        # Format for LLM explanation
+        old_txt = "\n".join(ctx_old_raw) if ctx_old_raw else "No usage found."
+        new_txt = "\n".join(ctx_new_raw) if ctx_new_raw else "No usage found."
         
         # Generate summary
         explanation = None
-        if ctx_old or ctx_new:
+        if ctx_old_raw or ctx_new_raw:
             try:
                 explanation = summarize_context_shift(topic, w, old_txt, new_txt)
             except Exception as e:
