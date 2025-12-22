@@ -7,7 +7,7 @@ router = APIRouter()
 # Force redeploy - 2025-12-16
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
+SUMMARY_DIR = BASE_DIR / "reports" / "generated" / "summaries"
 
 def load_history():
     out = []

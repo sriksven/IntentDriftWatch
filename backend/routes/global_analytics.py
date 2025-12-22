@@ -14,7 +14,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
+SUMMARY_DIR = BASE_DIR / "reports" / "generated" / "summaries"
 CLEANED_DATA_DIR = BASE_DIR / "data_pipeline" / "data" / "processed" / "cleaned"
 
 

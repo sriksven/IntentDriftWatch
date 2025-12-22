@@ -1,11 +1,11 @@
-from models.concept_drift_xgb import run_concept_drift
+from ml_pipelines.models.concept_drift_xgb import run_concept_drift
 import json
 from pathlib import Path
 
 THRESHOLD = 0.20
 
 def main():
-    summaries = list(Path("drift_reports/summaries").glob("*.json"))
+    summaries = list(Path("reports/generated/summaries").glob("*.json"))
     if not summaries:
         print("No summary files found")
         return

@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
-from monitoring.drift_summary import main as run_summary
+from ml_pipelines.monitoring.drift_summary import main as run_summary
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT))
 
-from monitoring.drift_summary import main as run_summary
+from ml_pipelines.monitoring.drift_summary import main as run_summary
 
 def main():
     print("Running smoke test...")
@@ -15,7 +15,7 @@ def main():
     run_summary()
 
     # Find the latest summary file to validate
-    summaries_dir = Path("drift_reports/summaries")
+    summaries_dir = Path("reports/generated/summaries")
     summaries = list(summaries_dir.glob("drift_summary_*.json"))
 
     assert summaries, "No summary files generated."

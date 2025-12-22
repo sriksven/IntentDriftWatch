@@ -5,7 +5,7 @@ import json
 router = APIRouter()
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-SUMMARY_DIR = BASE_DIR / "drift_reports" / "summaries"
+SUMMARY_DIR = BASE_DIR / "reports" / "generated" / "summaries"
 
 @router.get("/alert_status")
 def get_alert_status(

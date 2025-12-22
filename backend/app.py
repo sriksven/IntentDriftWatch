@@ -51,7 +51,7 @@ import os
 # backend/app.py -> backend/ -> drift_reports/ is at parent sibling
 # Correct path resolution:
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REPORT_DIR = os.path.join(BASE_DIR, "drift_reports")
+REPORT_DIR = os.path.join(BASE_DIR, "reports", "generated")
 
 if os.path.exists(REPORT_DIR):
     app.mount("/drift_reports", StaticFiles(directory=REPORT_DIR), name="drift_reports")

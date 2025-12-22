@@ -13,7 +13,7 @@ from data_pipeline.utils.io_utils import ensure_dir
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-LOG_PATH = "logging/logs/data_collection_log.json"
+LOG_PATH = "logs/data_collection_log.json"
 
 def log_collection_event(topic: str, source: str, path: str):
     """Append a new record to the data collection log."""
