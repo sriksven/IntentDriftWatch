@@ -63,14 +63,14 @@ jobs:
 
       - name: Run full pipeline
         run: |
-          python pipelines/full_pipeline.py
+          python ml_pipelines/pipelines/full_pipeline.py
 
       - name: Commit and push drift reports
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
-          git add drift_reports/
+          git add reports/generated/
           git add data_pipeline/data/processed/cleaned/
           git commit -m "Auto-update drift reports $(date)" || echo "No changes to commit"
           git push origin HEAD:main
