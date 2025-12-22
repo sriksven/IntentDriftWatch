@@ -57,20 +57,20 @@ from data_pipeline.data_collectors.rss_scraper import fetch_rss_articles
 from data_pipeline.combine_sources import combine_topic_data
 from data_pipeline.clean_combined_data import clean_combined_topic
 from data_pipeline.generate_embeddings import generate_embeddings_for_topic
-from analytics.semantic_drift import run_semantic_drift
+from ml_pipelines.analytics.semantic_drift import run_semantic_drift
 
 # Try to import concept drift (module may vary by install)
 try:
-    from analytics.concept_drift_xgb import run_concept_drift
+    from ml_pipelines.analytics.concept_drift_xgb import run_concept_drift
 except ImportError:
     try:
-        from models.concept_drift_xgb import run_concept_drift
+        from ml_pipelines.models.concept_drift_xgb import run_concept_drift
     except ImportError:
         logger.warning("concept_drift_xgb module not found")
         run_concept_drift = None
 
 from data_pipeline.utils.log_data_collection import log_collection_event
-from monitoring.drift_summary import main as run_drift_summary
+from ml_pipelines.monitoring.drift_summary import main as run_drift_summary
 
 # =========================================
 # CONFIG

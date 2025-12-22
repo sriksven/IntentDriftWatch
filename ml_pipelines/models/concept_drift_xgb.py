@@ -13,8 +13,8 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from data_pipeline.utils.io_utils import ensure_dir, save_json
-from analytics.evidently_reports import generate_concept_drift_report
-from analytics.plotly_reports import generate_semantic_drift_report, generate_concept_drift_report
+from ml_pipelines.analytics.evidently_reports import generate_concept_drift_report
+from ml_pipelines.analytics.plotly_reports import generate_semantic_drift_report, generate_concept_drift_report
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -112,9 +112,9 @@ def compute_concept_drift(topic, old_emb_path, new_emb_path, old_date, new_date)
         "interpretation": f"Model can distinguish old/new with {acc_test:.1%} accuracy"
     }
 
-    ensure_dir("drift_reports/concept")
+    ensure_dir("reports/generated/concept")
     path = os.path.join(
-        "drift_reports/concept",
+        "reports/generated/concept",
         f"{topic.replace(' ', '_')}_concept_drift_{new_date}.json"
     )
     save_json(result, path)

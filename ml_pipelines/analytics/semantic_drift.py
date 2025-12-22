@@ -10,8 +10,8 @@ import logging
 from scipy.spatial.distance import cosine
 from scipy.stats import entropy
 from data_pipeline.utils.io_utils import ensure_dir, save_json
-from analytics.evidently_reports import generate_semantic_drift_report
-from analytics.plotly_reports import generate_semantic_drift_report, generate_concept_drift_report
+from ml_pipelines.analytics.evidently_reports import generate_semantic_drift_report
+from ml_pipelines.analytics.plotly_reports import generate_semantic_drift_report, generate_concept_drift_report
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
