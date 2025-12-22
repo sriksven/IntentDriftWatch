@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD:reports/generated/summaries/drift_summary_2025-11-11.json
   "generated_at": "2025-12-22",
-=======
-  "generated_at": "2025-12-21",
->>>>>>> origin/main:drift_reports/summaries/drift_summary_2025-11-11.json
   "date": "2025-11-11",
   "rows": [
     {
@@ -59,7 +55,7 @@
       "date": "2025-11-11",
       "semantic_status": "Stable",
       "semantic_score": 0.08969999849796295,
-      "cosine_drift": 0.048605918884277344,
+      "cosine_drift": 0.04860585927963257,
       "jsd_drift": 0.13072016835212708,
       "concept_status": "Stable",
       "test_acc": 0.5063291139240507,
