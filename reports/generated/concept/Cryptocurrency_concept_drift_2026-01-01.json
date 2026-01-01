@@ -1,0 +1,15 @@
+{
+  "topic": "Cryptocurrency",
+  "timestamp": "2026-01-01 15:17:48.804446",
+  "old_date": "2025-11-15",
+  "new_date": "2026-01-01",
+  "old_samples": 131,
+  "new_samples": 131,
+  "train_acc": 1.0,
+  "test_acc": 0.5316455696202531,
+  "train_f1": 1.0,
+  "test_f1": 0.5261863630495325,
+  "accuracy_drop": 0.4684,
+  "status": "Stable",
+  "interpretation": "Model can distinguish old/new with 53.2% accuracy"
+}
