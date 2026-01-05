@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-01-05",
+  "date": "2026-01-05",
+  "rows": [
+    {
+      "topic": "Artificial Intelligence",
+      "date": "2026-01-05",
+      "semantic_status": "Stable",
+      "semantic_score": 0.08609999716281891,
+      "cosine_drift": 0.04101908206939697,
+      "jsd_drift": 0.13123928010463715,
+      "concept_status": "Stable",
+      "test_acc": 0.5316455696202531,
+      "test_f1": 0.530742717706268,
+      "accuracy_drop": 0.4684
+    },
+    {
+      "topic": "Climate Change",
+      "date": "2026-01-05",
+      "semantic_status": "Stable",
+      "semantic_score": 0.09210000187158585,
+      "cosine_drift": 0.05073350667953491,
+      "jsd_drift": 0.13351655006408691,
+      "concept_status": "Stable",
+      "test_acc": 0.5189873417721519,
+      "test_f1": 0.5188331710483609,
+      "accuracy_drop": 0.481
+    },
+    {
+      "topic": "Cryptocurrency",
+      "date": "2026-01-05",
+      "semantic_status": "Stable",
+      "semantic_score": 0.09070000052452087,
+      "cosine_drift": 0.052631258964538574,
+      "jsd_drift": 0.1287730485200882,
+      "concept_status": "Moderate Drift",
+      "test_acc": 0.620253164556962,
+      "test_f1": 0.6190313278920874,
+      "accuracy_drop": 0.3797
+    },
+    {
+      "topic": "Elections",
+      "date": "2026-01-05",
+      "semantic_status": "Stable",
+      "semantic_score": 0.12680000066757202,
+      "cosine_drift": 0.11738258600234985,
+      "jsd_drift": 0.1362263709306717,
+      "concept_status": "Moderate Drift",
+      "test_acc": 0.7215189873417721,
+      "test_f1": 0.7174502712477396,
+      "accuracy_drop": 0.2785
+    },
+    {
+      "topic": "Electric Vehicles",
+      "date": "2026-01-05",
+      "semantic_status": "Stable",
+      "semantic_score": 0.09359999746084213,
+      "cosine_drift": 0.053781747817993164,
+      "jsd_drift": 0.13348934054374695,
+      "concept_status": "Moderate Drift",
+      "test_acc": 0.6962025316455697,
+      "test_f1": 0.69473632764772,
+      "accuracy_drop": 0.3038
+    },
+    {
+      "topic": "Space Exploration",
+      "date": "2026-01-05",
+      "semantic_status": "Stable",
+      "semantic_score": 0.09719999879598618,
+      "cosine_drift": 0.061434805393218994,
+      "jsd_drift": 0.13287422060966492,
+      "concept_status": "Moderate Drift",
+      "test_acc": 0.6835443037974683,
+      "test_f1": 0.681402299085058,
+      "accuracy_drop": 0.3165
+    }
+  ]
+}

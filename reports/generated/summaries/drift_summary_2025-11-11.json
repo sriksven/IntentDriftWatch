@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-04",
+  "generated_at": "2026-01-05",
   "date": "2025-11-11",
   "rows": [
     {
@@ -55,7 +55,7 @@
       "date": "2025-11-11",
       "semantic_status": "Stable",
       "semantic_score": 0.08969999849796295,
-      "cosine_drift": 0.04860585927963257,
+      "cosine_drift": 0.048605918884277344,
       "jsd_drift": 0.13072016835212708,
       "concept_status": "Stable",
       "test_acc": 0.5063291139240507,
