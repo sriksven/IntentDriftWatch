@@ -1,0 +1,14 @@
+{
+  "topic": "Artificial Intelligence",
+  "timestamp": "2026-01-06 15:18:09.115273",
+  "old_date": "2025-11-15",
+  "new_date": "2026-01-06",
+  "old_samples": 131,
+  "new_samples": 131,
+  "cosine_drift": 0.05129426717758179,
+  "jsd_drift": 0.131943017244339,
+  "drift_score": 0.09160000085830688,
+  "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Artificial_Intelligence.npy",
+  "new_snapshot": "data_pipeline/data/processed/embeddings/2026-01-06/Artificial_Intelligence.npy",
+  "status": "Stable"
+}
