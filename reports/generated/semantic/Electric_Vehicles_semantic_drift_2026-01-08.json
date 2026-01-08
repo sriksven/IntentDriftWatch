@@ -1,0 +1,14 @@
+{
+  "topic": "Electric Vehicles",
+  "timestamp": "2026-01-08 15:22:00.996125",
+  "old_date": "2025-11-15",
+  "new_date": "2026-01-08",
+  "old_samples": 131,
+  "new_samples": 131,
+  "cosine_drift": 0.06419205665588379,
+  "jsd_drift": 0.13244658708572388,
+  "drift_score": 0.09830000251531601,
+  "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Electric_Vehicles.npy",
+  "new_snapshot": "data_pipeline/data/processed/embeddings/2026-01-08/Electric_Vehicles.npy",
+  "status": "Stable"
+}
