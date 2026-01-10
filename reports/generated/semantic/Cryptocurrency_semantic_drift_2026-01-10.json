@@ -1,0 +1,14 @@
+{
+  "topic": "Cryptocurrency",
+  "timestamp": "2026-01-10 15:17:58.620302",
+  "old_date": "2025-11-15",
+  "new_date": "2026-01-10",
+  "old_samples": 131,
+  "new_samples": 131,
+  "cosine_drift": 0.05199176073074341,
+  "jsd_drift": 0.12867404520511627,
+  "drift_score": 0.09030000120401382,
+  "old_snapshot": "data_pipeline/data/processed/embeddings/2025-11-15/Cryptocurrency.npy",
+  "new_snapshot": "data_pipeline/data/processed/embeddings/2026-01-10/Cryptocurrency.npy",
+  "status": "Stable"
+}
