@@ -1,0 +1,15 @@
+{
+  "topic": "Electric Vehicles",
+  "timestamp": "2026-01-16 15:20:33.309289",
+  "old_date": "2025-11-15",
+  "new_date": "2026-01-16",
+  "old_samples": 131,
+  "new_samples": 131,
+  "train_acc": 1.0,
+  "test_acc": 0.5822784810126582,
+  "train_f1": 1.0,
+  "test_f1": 0.580936403843221,
+  "accuracy_drop": 0.4177,
+  "status": "Stable",
+  "interpretation": "Model can distinguish old/new with 58.2% accuracy"
+}
