@@ -1,0 +1,15 @@
+{
+  "topic": "Elections",
+  "timestamp": "2026-01-25 15:16:54.313020",
+  "old_date": "2025-11-15",
+  "new_date": "2026-01-25",
+  "old_samples": 131,
+  "new_samples": 131,
+  "train_acc": 1.0,
+  "test_acc": 0.7088607594936709,
+  "train_f1": 1.0,
+  "test_f1": 0.7085806832642275,
+  "accuracy_drop": 0.2911,
+  "status": "Moderate Drift",
+  "interpretation": "Model can distinguish old/new with 70.9% accuracy"
+}
