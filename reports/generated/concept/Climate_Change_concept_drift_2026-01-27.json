@@ -1,0 +1,15 @@
+{
+  "topic": "Climate Change",
+  "timestamp": "2026-01-27 15:26:35.703989",
+  "old_date": "2025-11-15",
+  "new_date": "2026-01-27",
+  "old_samples": 131,
+  "new_samples": 131,
+  "train_acc": 1.0,
+  "test_acc": 0.6455696202531646,
+  "train_f1": 1.0,
+  "test_f1": 0.6454560207724765,
+  "accuracy_drop": 0.3544,
+  "status": "Moderate Drift",
+  "interpretation": "Model can distinguish old/new with 64.6% accuracy"
+}
